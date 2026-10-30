@@ -1,0 +1,197 @@
+name: health-platform
+
+# Free tools only: n8n (with its own built-in SQLite), Google Sheets as the platform's data store, Google Drive for the
+# knowledge base, Ollama for local models. For development without a Google account, the "sheets" service stands in
+# for the Sheets and Drive APIs (scripts/sheets-emulator.mjs); point SHEETS_API_URL and DRIVE_API_URL at Google to use
+# the real spreadsheet (see docs/setup/google-sheets.md).
+
+# Container logs are rotated so they cannot fill the disk.
+x-logging: &logging
+  driver: json-file
+  options: { max-size: "10m", max-file: "3" }
+
+services:
+  # Local Google Sheets and Drive stand-in: data in the sheetsdata volume, the knowledge folder from ai/knowledge.
+  sheets:
+    image: node:22-alpine
+    restart: unless-stopped
+    logging: *logging
+    command: ["node", "/app/sheets-emulator.mjs"]
+    environment:
+      PORT: 8090
+      DATA_DIR: /data
+      # Records encrypted on disk (AES-256-GCM); the service refuses to start with a wrong key.
+      DATA_ENCRYPTION_KEY: ${DATA_ENCRYPTION_KEY:-}
+      QUOTA_PER_MINUTE: ${EMULATOR_QUOTA_PER_MINUTE:-0}
+    ports:
+      - "127.0.0.1:${SHEETS_EMULATOR_PORT:-8090}:8090"   # this computer only
+    volumes:
+      - ../scripts/sheets-emulator.mjs:/app/sheets-emulator.mjs:ro
+      - sheetsdata:/data
+      - ../ai/knowledge:/data/drive/knowledge:ro
+
+  # Between n8n and the Sheets API: reference tabs and the knowledge index are answered from memory, every write drops
+  # what it changes (scripts/sheets-cache.mjs). Upstream is Google (SHEETS_API_URL in .env) or the local stand-in.
+  sheets-cache:
+    image: node:22-alpine
+    restart: unless-stopped
+    logging: *logging
+    command: ["node", "/app/sheets-cache.mjs"]
+    environment:
+      PORT: 8094
+      UPSTREAM: ${SHEETS_API_URL:-http://sheets:8090}
+      CACHE_TTL_MS: ${SHEETS_CACHE_TTL_MS:-600000}
+    ports:
+      - "127.0.0.1:${SHEETS_CACHE_PORT:-8094}:8094"   # this computer only (the setup scripts call /invalidate)
+    volumes:
+      - ../scripts/sheets-cache.mjs:/app/sheets-cache.mjs:ro
+    # n8n starts only once this answers, so scheduled jobs do not fail while the stack boots.
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:8094/health"]
+      interval: 5s
+      timeout: 3s
+      retries: 12
+      start_period: 5s
+
+  # Between n8n and the Gemini API (free tier): when a model is busy, over quota or silent, the next model of its chain
+  # answers (scripts/gemini-gateway.mjs). n8n's Gemini credential points here. Logs hold no prompt or answer text.
+  gemini:
+    image: node:22-alpine
+    restart: unless-stopped
+    logging: *logging
+    command: ["node", "/app/gemini-gateway.mjs"]
+    environment:
+      PORT: 8092
+      GEMINI_CHAINS: ${GEMINI_CHAINS:-}
+      GEMINI_TIMEOUT_MS: ${GEMINI_TIMEOUT_MS:-20000}
+      GEMINI_REST_MS: ${GEMINI_REST_MS:-600000}
+      GEMINI_HEDGE_MS: ${GEMINI_HEDGE_MS:-8000}
+      GEMINI_THINKING: ${GEMINI_THINKING:-low}
+    volumes:
+      - ../scripts/gemini-gateway.mjs:/app/gemini-gateway.mjs:ro
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:8092/health"]
+      interval: 5s
+      timeout: 3s
+      retries: 12
+      start_period: 5s
+
+  # Uploaded documents are kept on this server in the docfiles volume; n8n (user 1000) must own it.
+  files-init:
+    image: alpine:3
+    command: ["sh", "-c", "mkdir -p /files/documents && chown -R 1000:1000 /files && chmod 700 /files"]
+    volumes: [docfiles:/files]
+
+  n8n:
+    image: docker.n8n.io/n8nio/n8n:${N8N_VERSION:-2.42.5}
+    restart: unless-stopped
+    logging: *logging
+    depends_on:
+      sheets: { condition: service_started }
+      gemini: { condition: service_healthy }
+      sheets-cache: { condition: service_healthy }
+      files-init: { condition: service_completed_successfully }
+    ports:
+      - "127.0.0.1:${N8N_PORT:-5678}:5678"   # this computer only
+    env_file: ../.env
+    environment:
+      # n8n keeps its own settings, credentials and workflow in SQLite inside the n8ndata volume.
+      DB_TYPE: sqlite
+      # Deleted execution records stay in the file as free pages until it is compacted: compact it at every start.
+      DB_SQLITE_VACUUM_ON_STARTUP: "true"
+      N8N_ENCRYPTION_KEY: ${N8N_ENCRYPTION_KEY}
+      GENERIC_TIMEZONE: Africa/Cairo
+      TZ: Africa/Cairo
+      N8N_HOST: localhost
+      N8N_PORT: 5678              # inside the container; the host port is set by the mapping above
+      WEBHOOK_URL: ${N8N_PUBLIC_URL:-http://localhost:5678/}
+      N8N_SECURE_COOKIE: "false"
+      N8N_DIAGNOSTICS_ENABLED: "false"
+      N8N_PERSONALIZATION_ENABLED: "false"
+      N8N_BLOCK_ENV_ACCESS_IN_NODE: "false"
+      N8N_RUNNERS_ENABLED: "true"
+      # The engine (Code nodes) hashes passwords and tokens with Node's crypto module.
+      NODE_FUNCTION_ALLOW_BUILTIN: crypto
+      # The platform's data: a Google spreadsheet (or the local stand-in) and the knowledge folder in Google Drive.
+      # Sheets reads and writes go through the cache (which talks to SHEETS_API_URL).
+      SHEETS_API_URL: http://sheets-cache:8094
+      DRIVE_API_URL: ${DRIVE_API_URL:-http://sheets:8090}
+      SHEETS_ID: ${SHEETS_ID:-local}
+      DRIVE_KNOWLEDGE_FOLDER_ID: ${DRIVE_KNOWLEDGE_FOLDER_ID:-knowledge}
+      # PHI hygiene: execution data holds health information, so nothing is kept.
+      EXECUTIONS_DATA_SAVE_ON_SUCCESS: ${EXECUTIONS_DATA_SAVE_ON_SUCCESS:-none}
+      EXECUTIONS_DATA_SAVE_ON_ERROR: ${EXECUTIONS_DATA_SAVE_ON_ERROR:-none}
+      EXECUTIONS_DATA_SAVE_MANUAL_EXECUTIONS: "false"
+      EXECUTIONS_TIMEOUT: 600
+      EXECUTIONS_TIMEOUT_MAX: 3600
+      EXECUTIONS_DATA_PRUNE: "true"
+      EXECUTIONS_DATA_MAX_AGE: 72
+      # A finished run that keeps no data is only marked deleted at first; this job removes it, with the request data
+      # it still holds, every minute (n8n's default is 15 minutes, restarted on every restart).
+      EXECUTIONS_DATA_PRUNE_HARD_DELETE_INTERVAL: 1
+      N8N_PAYLOAD_SIZE_MAX: 32
+      OLLAMA_URL: ${OLLAMA_URL:-http://host.docker.internal:11434}
+      # Gemini models: main (agent, verifiers, brief, documents) and lite (extraction, explanations), via the gateway.
+      GEMINI_MODEL: ${GEMINI_MODEL:-gemini-3.8-flash}
+      GEMINI_MODEL_LITE: ${GEMINI_MODEL_LITE:-gemini-3.5-flash-lite}
+      GEMINI_BASE_URL: http://gemini:8092
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - n8ndata:/home/node/.n8n
+      - docfiles:/home/node/.n8n-files     # uploaded documents (private; back it up with the spreadsheet)
+      - ../workflows/n8n:/workflows:ro
+      - ../workflows/n8n-local:/workflows-local:ro   # the local flavour (Sheets stand-in, no Google credential)
+      - ./n8n-credentials.json:/import/credentials.json:ro
+
+  # Local mail catcher for development: emails sent by the app appear at http://localhost:8025 (nothing leaves this PC).
+  mailpit:
+    image: axllent/mailpit:latest
+    restart: unless-stopped
+    logging: *logging
+    ports: ["127.0.0.1:8025:8025"]
+
+  # The web app as a container (opt-in: --profile web, or --profile public with the tunnel below). Host port 3300 by
+  # default, so it can run next to `pnpm dev` on 3000. It forwards /n8n/* to n8n's webhooks only (the API), never to
+  # the n8n editor.
+  web:
+    build:
+      context: ..
+      dockerfile: apps/web/Dockerfile
+      args:
+        N8N_URL: http://n8n:5678
+    image: health-platform-web:latest
+    profiles: ["web", "public"]
+    restart: unless-stopped
+    logging: *logging
+    depends_on: [n8n]
+    ports:
+      - "127.0.0.1:${WEB_PORT:-3300}:3000"
+    environment:
+      # Read at run time by /api/push-key, so browsers can allow notifications (the private key stays in n8n).
+      VAPID_PUBLIC_KEY: ${VAPID_PUBLIC_KEY:-}   # this computer only; the public link goes through the tunnel
+
+  # A public https link to the web app through a free Cloudflare quick tunnel (no account; opt-in: --profile public).
+  # Only the web app is reachable through it: the n8n editor (5678), the data stand-in (8090) and Mailpit stay on
+  # this computer. The address (https://<random words>.trycloudflare.com) changes every time the tunnel starts:
+  #   docker compose -f infra/docker-compose.yml logs tunnel | grep trycloudflare
+  tunnel:
+    image: cloudflare/cloudflared:latest
+    profiles: ["public"]
+    restart: unless-stopped
+    logging: *logging
+    command: ["tunnel", "--no-autoupdate", "--url", "http://web:3000"]
+    depends_on: [web]
+
+  # Optional: run Ollama in Docker instead of on the host (needs NVIDIA container toolkit for GPU).
+  ollama:
+    image: ollama/ollama:latest
+    profiles: ["ollama"]
+    ports: ["127.0.0.1:11434:11434"]
+    volumes: [ollama:/root/.ollama]
+
+volumes:
+  n8ndata:
+  sheetsdata:
+  docfiles:
+  ollama:

@@ -1,0 +1,1710 @@
+[
+ {
+  "grp": "auth",
+  "routes": {
+   "login": {
+    "roles": "*",
+    "public": true
+   },
+   "me": {
+    "roles": "*",
+    "public": false
+   },
+   "logout": {
+    "roles": "*",
+    "public": false
+   },
+   "verify_mfa": {
+    "roles": "*",
+    "public": true
+   },
+   "register": {
+    "roles": "*",
+    "public": true
+   },
+   "forgot_password": {
+    "roles": "*",
+    "public": true
+   },
+   "reset_with_token": {
+    "roles": "*",
+    "public": true
+   },
+   "change_password": {
+    "roles": "*",
+    "public": false
+   },
+   "mfa_setup": {
+    "roles": "*",
+    "public": false
+   },
+   "mfa_enable": {
+    "roles": "*",
+    "public": false
+   },
+   "mfa_disable": {
+    "roles": "*",
+    "public": false
+   },
+   "redeem_invite": {
+    "roles": [
+     "caregiver"
+    ],
+    "public": false
+   },
+   "delete_account": {
+    "roles": [
+     "patient",
+     "caregiver"
+    ],
+    "public": false
+   }
+  }
+ },
+ {
+  "grp": "today",
+  "routes": {
+   "get": {
+    "roles": [
+     "patient",
+     "caregiver",
+     "doctor",
+     "nurse",
+     "clinic_admin"
+    ],
+    "public": false
+   },
+   "page": {
+    "roles": [
+     "patient",
+     "caregiver",
+     "doctor",
+     "nurse",
+     "clinic_admin"
+    ],
+    "public": false
+   }
+  }
+ },
+ {
+  "grp": "profile",
+  "routes": {
+   "get": {
+    "roles": [
+     "patient",
+     "caregiver",
+     "doctor",
+     "nurse",
+     "receptionist",
+     "clinic_admin"
+    ],
+    "public": false
+   },
+   "state": {
+    "roles": [
+     "patient",
+     "caregiver",
+     "doctor",
+     "nurse",
+     "clinic_admin"
+    ],
+    "public": false
+   },
+   "update": {
+    "roles": [
+     "patient",
+     "caregiver",
+     "doctor",
+     "nurse",
+     "clinic_admin"
+    ],
+    "public": false,
+    "scope": "manage"
+   },
+   "export": {
+    "roles": [
+     "patient"
+    ],
+    "public": false
+   },
+   "consents": {
+    "roles": [
+     "patient"
+    ],
+    "public": false
+   },
+   "set_consent": {
+    "roles": [
+     "patient"
+    ],
+    "public": false
+   },
+   "preferences": {
+    "roles": [
+     "patient",
+     "caregiver",
+     "doctor",
+     "nurse",
+     "clinic_admin"
+    ],
+    "public": false
+   },
+   "set_preferences": {
+    "roles": [
+     "patient",
+     "caregiver"
+    ],
+    "public": false,
+    "scope": "manage"
+   },
+   "push_subscribe": {
+    "roles": "*",
+    "public": false
+   },
+   "push_unsubscribe": {
+    "roles": "*",
+    "public": false
+   },
+   "data_request": {
+    "roles": [
+     "patient"
+    ],
+    "public": false
+   },
+   "data_requests": {
+    "roles": [
+     "patient"
+    ],
+    "public": false
+   },
+   "access_log": {
+    "roles": [
+     "patient"
+    ],
+    "public": false
+   }
+  }
+ },
+ {
+  "grp": "clinical",
+  "routes": {
+   "summary": {
+    "roles": [
+     "patient",
+     "caregiver",
+     "doctor",
+     "nurse",
+     "clinic_admin"
+    ],
+    "public": false
+   },
+   "timeline": {
+    "roles": [
+     "patient",
+     "caregiver",
+     "doctor",
+     "nurse",
+     "clinic_admin"
+    ],
+    "public": false
+   },
+   "add_condition": {
+    "roles": [
+     "patient",
+     "caregiver",
+     "doctor",
+     "nurse",
+     "clinic_admin"
+    ],
+    "public": false,
+    "scope": "manage"
+   },
+   "add_allergy": {
+    "roles": [
+     "patient",
+     "caregiver",
+     "doctor",
+     "nurse",
+     "clinic_admin"
+    ],
+    "public": false,
+    "scope": "manage"
+   },
+   "add_medication": {
+    "roles": [
+     "patient",
+     "caregiver",
+     "doctor",
+     "nurse",
+     "clinic_admin"
+    ],
+    "public": false,
+    "scope": "manage"
+   },
+   "stop_medication": {
+    "roles": [
+     "patient",
+     "caregiver",
+     "doctor",
+     "nurse",
+     "clinic_admin"
+    ],
+    "public": false,
+    "scope": "manage"
+   },
+   "update_medication": {
+    "roles": [
+     "patient",
+     "caregiver",
+     "doctor",
+     "nurse",
+     "clinic_admin"
+    ],
+    "public": false,
+    "scope": "manage"
+   },
+   "resolve_condition": {
+    "roles": [
+     "patient",
+     "caregiver",
+     "doctor",
+     "nurse",
+     "clinic_admin"
+    ],
+    "public": false,
+    "scope": "manage"
+   },
+   "remove_allergy": {
+    "roles": [
+     "patient",
+     "caregiver",
+     "doctor",
+     "nurse",
+     "clinic_admin"
+    ],
+    "public": false,
+    "scope": "manage"
+   },
+   "log_dose": {
+    "roles": [
+     "patient",
+     "caregiver",
+     "doctor",
+     "nurse",
+     "clinic_admin"
+    ],
+    "public": false,
+    "scope": "log"
+   },
+   "set_supply": {
+    "roles": [
+     "patient",
+     "caregiver",
+     "doctor",
+     "nurse",
+     "clinic_admin"
+    ],
+    "public": false,
+    "scope": "log"
+   },
+   "add_lab": {
+    "roles": [
+     "patient",
+     "caregiver",
+     "doctor",
+     "nurse",
+     "clinic_admin"
+    ],
+    "public": false,
+    "scope": "log"
+   },
+   "add_vital": {
+    "roles": [
+     "patient",
+     "caregiver",
+     "doctor",
+     "nurse",
+     "clinic_admin"
+    ],
+    "public": false,
+    "scope": "log"
+   },
+   "verify": {
+    "roles": [
+     "doctor",
+     "nurse"
+    ],
+    "public": false
+   },
+   "acknowledge_finding": {
+    "roles": [
+     "doctor",
+     "nurse"
+    ],
+    "public": false
+   },
+   "documents": {
+    "roles": [
+     "patient",
+     "caregiver",
+     "doctor",
+     "nurse",
+     "clinic_admin"
+    ],
+    "public": false
+   },
+   "upload_document": {
+    "roles": [
+     "patient",
+     "caregiver",
+     "doctor",
+     "nurse",
+     "clinic_admin"
+    ],
+    "public": false,
+    "scope": "log"
+   },
+   "review_document": {
+    "roles": [
+     "doctor",
+     "nurse"
+    ],
+    "public": false
+   }
+  }
+ },
+ {
+  "grp": "glucose",
+  "routes": {
+   "list": {
+    "roles": [
+     "patient",
+     "caregiver",
+     "doctor",
+     "nurse",
+     "clinic_admin"
+    ],
+    "public": false
+   },
+   "add": {
+    "roles": [
+     "patient",
+     "caregiver",
+     "doctor",
+     "nurse",
+     "clinic_admin"
+    ],
+    "public": false,
+    "scope": "log"
+   },
+   "delete": {
+    "roles": [
+     "patient",
+     "caregiver",
+     "doctor",
+     "nurse",
+     "clinic_admin"
+    ],
+    "public": false,
+    "scope": "log"
+   },
+   "read_meter": {
+    "roles": [
+     "patient",
+     "caregiver"
+    ],
+    "public": false,
+    "scope": "log"
+   },
+   "drive_check": {
+    "roles": [
+     "patient",
+     "caregiver",
+     "doctor",
+     "nurse",
+     "clinic_admin"
+    ],
+    "public": false
+   },
+   "metrics": {
+    "roles": [
+     "patient",
+     "caregiver",
+     "doctor",
+     "nurse",
+     "clinic_admin"
+    ],
+    "public": false
+   },
+   "patterns": {
+    "roles": [
+     "patient",
+     "caregiver",
+     "doctor",
+     "nurse",
+     "clinic_admin"
+    ],
+    "public": false
+   },
+   "agp": {
+    "roles": [
+     "patient",
+     "caregiver",
+     "doctor",
+     "nurse",
+     "clinic_admin"
+    ],
+    "public": false
+   },
+   "daily": {
+    "roles": [
+     "patient",
+     "caregiver",
+     "doctor",
+     "nurse",
+     "clinic_admin"
+    ],
+    "public": false
+   },
+   "nightscout_status": {
+    "roles": [
+     "patient",
+     "caregiver",
+     "doctor",
+     "nurse",
+     "clinic_admin"
+    ],
+    "public": false
+   },
+   "page": {
+    "roles": [
+     "patient",
+     "caregiver",
+     "doctor",
+     "nurse",
+     "clinic_admin"
+    ],
+    "public": false
+   },
+   "nightscout_connect": {
+    "roles": [
+     "patient",
+     "caregiver",
+     "doctor",
+     "nurse",
+     "clinic_admin"
+    ],
+    "public": false,
+    "scope": "manage"
+   },
+   "nightscout_disconnect": {
+    "roles": [
+     "patient",
+     "caregiver",
+     "doctor",
+     "nurse",
+     "clinic_admin"
+    ],
+    "public": false,
+    "scope": "manage"
+   }
+  }
+ },
+ {
+  "grp": "lifestyle",
+  "routes": {
+   "food_profile": {
+    "roles": [
+     "patient",
+     "caregiver",
+     "doctor",
+     "nurse",
+     "clinic_admin"
+    ],
+    "public": false
+   },
+   "foods": {
+    "roles": "*",
+    "public": false
+   },
+   "log_meal": {
+    "roles": [
+     "patient",
+     "caregiver",
+     "doctor",
+     "nurse",
+     "clinic_admin"
+    ],
+    "public": false,
+    "scope": "log"
+   },
+   "log_activity": {
+    "roles": [
+     "patient",
+     "caregiver",
+     "doctor",
+     "nurse",
+     "clinic_admin"
+    ],
+    "public": false,
+    "scope": "log"
+   },
+   "log_sleep": {
+    "roles": [
+     "patient",
+     "caregiver",
+     "doctor",
+     "nurse",
+     "clinic_admin"
+    ],
+    "public": false,
+    "scope": "log"
+   },
+   "checkin": {
+    "roles": [
+     "patient",
+     "caregiver",
+     "doctor",
+     "nurse",
+     "clinic_admin"
+    ],
+    "public": false,
+    "scope": "log"
+   },
+   "summary": {
+    "roles": [
+     "patient",
+     "caregiver",
+     "doctor",
+     "nurse",
+     "clinic_admin"
+    ],
+    "public": false
+   },
+   "page": {
+    "roles": [
+     "patient",
+     "caregiver",
+     "doctor",
+     "nurse",
+     "clinic_admin"
+    ],
+    "public": false
+   }
+  }
+ },
+ {
+  "grp": "care",
+  "routes": {
+   "plan": {
+    "roles": [
+     "patient",
+     "caregiver",
+     "doctor",
+     "nurse",
+     "clinic_admin"
+    ],
+    "public": false
+   },
+   "plan_history": {
+    "roles": [
+     "patient",
+     "caregiver",
+     "doctor",
+     "nurse",
+     "clinic_admin"
+    ],
+    "public": false
+   },
+   "complete_task": {
+    "roles": [
+     "patient",
+     "caregiver",
+     "doctor",
+     "nurse",
+     "clinic_admin"
+    ],
+    "public": false,
+    "scope": "log"
+   },
+   "screenings": {
+    "roles": [
+     "patient",
+     "caregiver",
+     "doctor",
+     "nurse",
+     "clinic_admin"
+    ],
+    "public": false
+   },
+   "record_screening": {
+    "roles": [
+     "patient",
+     "caregiver",
+     "doctor",
+     "nurse",
+     "clinic_admin"
+    ],
+    "public": false,
+    "scope": "log"
+   },
+   "ramadan": {
+    "roles": [
+     "patient",
+     "caregiver",
+     "doctor",
+     "nurse",
+     "clinic_admin"
+    ],
+    "public": false
+   },
+   "ramadan_assess": {
+    "roles": [
+     "patient",
+     "caregiver",
+     "doctor",
+     "nurse",
+     "clinic_admin"
+    ],
+    "public": false,
+    "scope": "log"
+   },
+   "ramadan_fasting": {
+    "roles": [
+     "patient",
+     "caregiver",
+     "doctor",
+     "nurse",
+     "clinic_admin"
+    ],
+    "public": false,
+    "scope": "log"
+   },
+   "wellbeing": {
+    "roles": [
+     "patient",
+     "caregiver",
+     "doctor",
+     "nurse",
+     "clinic_admin"
+    ],
+    "public": false
+   },
+   "wellbeing_submit": {
+    "roles": [
+     "patient"
+    ],
+    "public": false
+   },
+   "sick_status": {
+    "roles": [
+     "patient",
+     "caregiver",
+     "doctor",
+     "nurse",
+     "clinic_admin"
+    ],
+    "public": false
+   },
+   "sick_start": {
+    "roles": [
+     "patient",
+     "caregiver",
+     "doctor",
+     "nurse",
+     "clinic_admin"
+    ],
+    "public": false,
+    "scope": "log"
+   },
+   "sick_end": {
+    "roles": [
+     "patient",
+     "caregiver",
+     "doctor",
+     "nurse",
+     "clinic_admin"
+    ],
+    "public": false,
+    "scope": "log"
+   },
+   "appointments": {
+    "roles": [
+     "patient",
+     "caregiver",
+     "doctor",
+     "nurse",
+     "receptionist",
+     "clinic_admin"
+    ],
+    "public": false
+   },
+   "book_appointment": {
+    "roles": [
+     "patient",
+     "caregiver",
+     "doctor",
+     "nurse",
+     "receptionist",
+     "clinic_admin"
+    ],
+    "public": false,
+    "scope": "log"
+   },
+   "update_appointment": {
+    "roles": [
+     "doctor",
+     "nurse",
+     "receptionist",
+     "clinic_admin"
+    ],
+    "public": false
+   },
+   "cancel_appointment": {
+    "roles": [
+     "patient",
+     "caregiver",
+     "doctor",
+     "nurse",
+     "receptionist",
+     "clinic_admin"
+    ],
+    "public": false,
+    "scope": "log"
+   },
+   "save_plan_draft": {
+    "roles": [
+     "doctor",
+     "nurse"
+    ],
+    "public": false
+   },
+   "publish_plan": {
+    "roles": [
+     "doctor"
+    ],
+    "public": false
+   },
+   "message_team": {
+    "roles": [
+     "patient",
+     "caregiver"
+    ],
+    "public": false,
+    "scope": "log"
+   },
+   "messages": {
+    "roles": [
+     "patient",
+     "caregiver",
+     "doctor",
+     "nurse",
+     "clinic_admin"
+    ],
+    "public": false
+   },
+   "reply_message": {
+    "roles": [
+     "doctor",
+     "nurse"
+    ],
+    "public": false
+   },
+   "caregivers": {
+    "roles": [
+     "patient"
+    ],
+    "public": false
+   },
+   "page": {
+    "roles": [
+     "patient",
+     "caregiver",
+     "doctor",
+     "nurse",
+     "clinic_admin"
+    ],
+    "public": false
+   },
+   "my_doctor": {
+    "roles": [
+     "patient",
+     "caregiver",
+     "doctor",
+     "nurse",
+     "clinic_admin"
+    ],
+    "public": false
+   },
+   "invite_caregiver": {
+    "roles": [
+     "patient"
+    ],
+    "public": false
+   },
+   "revoke_caregiver": {
+    "roles": [
+     "patient"
+    ],
+    "public": false
+   },
+   "set_caregiver_scopes": {
+    "roles": [
+     "patient"
+    ],
+    "public": false
+   },
+   "email_invite": {
+    "roles": [
+     "patient"
+    ],
+    "public": false
+   },
+   "organizations": {
+    "roles": "*",
+    "public": false
+   },
+   "request_link": {
+    "roles": [
+     "patient",
+     "caregiver"
+    ],
+    "public": false,
+    "scope": "manage"
+   },
+   "link_requests": {
+    "roles": [
+     "patient",
+     "caregiver"
+    ],
+    "public": false
+   }
+  }
+ },
+ {
+  "grp": "intake",
+  "routes": {
+   "start": {
+    "roles": [
+     "patient",
+     "caregiver",
+     "doctor",
+     "nurse",
+     "clinic_admin"
+    ],
+    "public": false,
+    "scope": "log"
+   },
+   "answer": {
+    "roles": [
+     "patient",
+     "caregiver",
+     "doctor",
+     "nurse",
+     "clinic_admin"
+    ],
+    "public": false,
+    "scope": "log"
+   },
+   "free_text": {
+    "roles": [
+     "patient",
+     "caregiver",
+     "doctor",
+     "nurse",
+     "clinic_admin"
+    ],
+    "public": false,
+    "scope": "log"
+   }
+  }
+ },
+ {
+  "grp": "episodes",
+  "routes": {
+   "list": {
+    "roles": [
+     "patient",
+     "caregiver",
+     "doctor",
+     "nurse",
+     "clinic_admin"
+    ],
+    "public": false
+   },
+   "get": {
+    "roles": [
+     "patient",
+     "caregiver",
+     "doctor",
+     "nurse",
+     "clinic_admin"
+    ],
+    "public": false
+   },
+   "select_action": {
+    "roles": [
+     "patient",
+     "caregiver",
+     "doctor",
+     "nurse",
+     "clinic_admin"
+    ],
+    "public": false,
+    "scope": "log"
+   },
+   "followup": {
+    "roles": [
+     "patient",
+     "caregiver",
+     "doctor",
+     "nurse",
+     "clinic_admin"
+    ],
+    "public": false,
+    "scope": "log"
+   }
+  }
+ },
+ {
+  "grp": "network",
+  "routes": {
+   "search": {
+    "roles": [
+     "patient",
+     "caregiver",
+     "doctor",
+     "nurse",
+     "receptionist",
+     "clinic_admin",
+     "capacity_operator",
+     "transfer_coordinator",
+     "platform_admin",
+     "safety_officer"
+    ],
+    "public": false
+   },
+   "facility": {
+    "roles": [
+     "patient",
+     "caregiver",
+     "doctor",
+     "nurse",
+     "receptionist",
+     "clinic_admin",
+     "capacity_operator",
+     "transfer_coordinator",
+     "platform_admin",
+     "safety_officer"
+    ],
+    "public": false
+   },
+   "update_capacity": {
+    "roles": [
+     "capacity_operator",
+     "clinic_admin",
+     "platform_admin"
+    ],
+    "public": false
+   },
+   "referrals": {
+    "roles": [
+     "patient",
+     "caregiver",
+     "doctor",
+     "nurse",
+     "receptionist",
+     "clinic_admin"
+    ],
+    "public": false
+   },
+   "create_referral": {
+    "roles": [
+     "doctor",
+     "nurse"
+    ],
+    "public": false
+   },
+   "update_referral": {
+    "roles": [
+     "patient",
+     "caregiver",
+     "doctor",
+     "nurse",
+     "receptionist",
+     "clinic_admin"
+    ],
+    "public": false
+   },
+   "transfers": {
+    "roles": [
+     "doctor",
+     "nurse",
+     "transfer_coordinator",
+     "clinic_admin"
+    ],
+    "public": false
+   },
+   "create_transfer": {
+    "roles": [
+     "doctor",
+     "nurse"
+    ],
+    "public": false
+   },
+   "update_transfer": {
+    "roles": [
+     "doctor",
+     "nurse",
+     "transfer_coordinator",
+     "clinic_admin"
+    ],
+    "public": false
+   }
+  }
+ },
+ {
+  "grp": "companion",
+  "routes": {
+   "send": {
+    "roles": [
+     "patient",
+     "caregiver"
+    ],
+    "public": false,
+    "scope": "log"
+   },
+   "history": {
+    "roles": [
+     "patient",
+     "caregiver"
+    ],
+    "public": false
+   }
+  }
+ },
+ {
+  "grp": "insights",
+  "routes": {
+   "list": {
+    "roles": [
+     "patient",
+     "caregiver",
+     "doctor",
+     "nurse",
+     "clinic_admin"
+    ],
+    "public": false
+   },
+   "mark_read": {
+    "roles": [
+     "patient",
+     "caregiver",
+     "doctor",
+     "nurse",
+     "clinic_admin"
+    ],
+    "public": false,
+    "scope": "log"
+   },
+   "notifications": {
+    "roles": "*",
+    "public": false
+   },
+   "mark_notification_read": {
+    "roles": "*",
+    "public": false
+   },
+   "mark_all_read": {
+    "roles": "*",
+    "public": false
+   }
+  }
+ },
+ {
+  "grp": "provider",
+  "routes": {
+   "inbox": {
+    "roles": [
+     "doctor",
+     "nurse",
+     "clinic_admin"
+    ],
+    "public": false
+   },
+   "update_inbox": {
+    "roles": [
+     "doctor",
+     "nurse",
+     "clinic_admin"
+    ],
+    "public": false
+   },
+   "care_gaps": {
+    "roles": [
+     "doctor",
+     "nurse",
+     "clinic_admin"
+    ],
+    "public": false
+   },
+   "panel_risk": {
+    "roles": [
+     "doctor",
+     "nurse",
+     "clinic_admin"
+    ],
+    "public": false
+   },
+   "personalization": {
+    "roles": [
+     "doctor",
+     "nurse",
+     "clinic_admin"
+    ],
+    "public": false
+   },
+   "therapy_review": {
+    "roles": [
+     "doctor",
+     "nurse"
+    ],
+    "public": false
+   },
+   "ai_reviews": {
+    "roles": [
+     "doctor",
+     "nurse",
+     "clinic_admin"
+    ],
+    "public": false
+   },
+   "ai_review_decide": {
+    "roles": [
+     "doctor",
+     "nurse"
+    ],
+    "public": false
+   },
+   "assign_inbox": {
+    "roles": [
+     "doctor",
+     "nurse",
+     "clinic_admin"
+    ],
+    "public": false
+   },
+   "panel": {
+    "roles": [
+     "doctor",
+     "nurse",
+     "receptionist",
+     "clinic_admin"
+    ],
+    "public": false
+   },
+   "workspace": {
+    "roles": [
+     "doctor",
+     "nurse",
+     "clinic_admin"
+    ],
+    "public": false
+   },
+   "schedule": {
+    "roles": [
+     "doctor",
+     "nurse",
+     "receptionist",
+     "clinic_admin"
+    ],
+    "public": false
+   },
+   "generate_brief": {
+    "roles": [
+     "doctor",
+     "nurse"
+    ],
+    "public": false
+   },
+   "stats": {
+    "roles": [
+     "doctor",
+     "nurse",
+     "receptionist",
+     "clinic_admin"
+    ],
+    "public": false
+   },
+   "home": {
+    "roles": [
+     "doctor",
+     "nurse",
+     "receptionist",
+     "clinic_admin"
+    ],
+    "public": false
+   },
+   "link_requests": {
+    "roles": [
+     "doctor",
+     "nurse",
+     "clinic_admin"
+    ],
+    "public": false
+   },
+   "decide_link": {
+    "roles": [
+     "doctor",
+     "clinic_admin"
+    ],
+    "public": false
+   },
+   "break_glass": {
+    "roles": [
+     "doctor",
+     "nurse"
+    ],
+    "public": false
+   },
+   "find_patient": {
+    "roles": [
+     "doctor",
+     "nurse"
+    ],
+    "public": false
+   }
+  }
+ },
+ {
+  "grp": "admin",
+  "routes": {
+   "rag_list": {
+    "roles": [
+     "clinic_admin",
+     "safety_officer",
+     "platform_admin"
+    ],
+    "public": false
+   },
+   "rag_create": {
+    "roles": [
+     "clinic_admin",
+     "safety_officer",
+     "platform_admin"
+    ],
+    "public": false
+   },
+   "rag_get": {
+    "roles": [
+     "clinic_admin",
+     "safety_officer",
+     "platform_admin"
+    ],
+    "public": false
+   },
+   "rag_approve": {
+    "roles": [
+     "safety_officer",
+     "clinic_admin"
+    ],
+    "public": false
+   },
+   "rag_retire": {
+    "roles": [
+     "safety_officer",
+     "clinic_admin"
+    ],
+    "public": false
+   },
+   "guideline_sources": {
+    "roles": [
+     "clinic_admin",
+     "safety_officer",
+     "platform_admin"
+    ],
+    "public": false
+   },
+   "guideline_check": {
+    "roles": [
+     "safety_officer",
+     "clinic_admin",
+     "platform_admin"
+    ],
+    "public": false
+   },
+   "rag_sync": {
+    "roles": [
+     "safety_officer",
+     "platform_admin"
+    ],
+    "public": false
+   },
+   "guideline_approve": {
+    "roles": [
+     "safety_officer"
+    ],
+    "public": false
+   },
+   "guideline_dismiss": {
+    "roles": [
+     "safety_officer"
+    ],
+    "public": false
+   },
+   "ai_runs": {
+    "roles": [
+     "clinic_admin",
+     "safety_officer",
+     "platform_admin"
+    ],
+    "public": false
+   },
+   "rules": {
+    "roles": [
+     "clinic_admin",
+     "safety_officer",
+     "platform_admin"
+    ],
+    "public": false
+   },
+   "outbox": {
+    "roles": [
+     "safety_officer",
+     "platform_admin"
+    ],
+    "public": false
+   },
+   "users": {
+    "roles": [
+     "clinic_admin",
+     "safety_officer",
+     "platform_admin"
+    ],
+    "public": false
+   },
+   "create_user": {
+    "roles": [
+     "clinic_admin",
+     "platform_admin"
+    ],
+    "public": false
+   },
+   "set_user_active": {
+    "roles": [
+     "clinic_admin",
+     "platform_admin"
+    ],
+    "public": false
+   },
+   "reset_password": {
+    "roles": [
+     "clinic_admin",
+     "platform_admin"
+    ],
+    "public": false
+   },
+   "audit": {
+    "roles": [
+     "clinic_admin",
+     "safety_officer",
+     "platform_admin"
+    ],
+    "public": false
+   },
+   "health": {
+    "roles": [
+     "safety_officer",
+     "platform_admin"
+    ],
+    "public": false
+   },
+   "incidents": {
+    "roles": [
+     "safety_officer",
+     "platform_admin"
+    ],
+    "public": false
+   },
+   "incident_resolve": {
+    "roles": [
+     "safety_officer",
+     "platform_admin"
+    ],
+    "public": false
+   },
+   "quality": {
+    "roles": [
+     "safety_officer",
+     "platform_admin"
+    ],
+    "public": false
+   },
+   "quality_report": {
+    "roles": [
+     "safety_officer",
+     "platform_admin"
+    ],
+    "public": false
+   },
+   "eval_record": {
+    "roles": [
+     "safety_officer",
+     "platform_admin"
+    ],
+    "public": false
+   },
+   "data_requests": {
+    "roles": [
+     "platform_admin"
+    ],
+    "public": false
+   },
+   "data_request_resolve": {
+    "roles": [
+     "platform_admin"
+    ],
+    "public": false
+   },
+   "breaches": {
+    "roles": [
+     "safety_officer",
+     "platform_admin"
+    ],
+    "public": false
+   },
+   "report_breach": {
+    "roles": [
+     "safety_officer",
+     "platform_admin"
+    ],
+    "public": false
+   },
+   "breach_notified": {
+    "roles": [
+     "safety_officer",
+     "platform_admin"
+    ],
+    "public": false
+   },
+   "monitoring": {
+    "roles": [
+     "clinic_admin",
+     "safety_officer",
+     "platform_admin"
+    ],
+    "public": false
+   },
+   "companion_resume": {
+    "roles": [
+     "safety_officer",
+     "platform_admin"
+    ],
+    "public": false
+   },
+   "calibration_queue": {
+    "roles": [
+     "safety_officer",
+     "platform_admin"
+    ],
+    "public": false
+   },
+   "calibration_score": {
+    "roles": [
+     "safety_officer",
+     "platform_admin"
+    ],
+    "public": false
+   },
+   "calibration_report": {
+    "roles": [
+     "safety_officer",
+     "platform_admin"
+    ],
+    "public": false
+   }
+  }
+ },
+ {
+  "grp": "clinic",
+  "routes": {
+   "request": {
+    "roles": [
+     "patient",
+     "caregiver"
+    ],
+    "public": false,
+    "scope": "log"
+   },
+   "patient_page": {
+    "roles": [
+     "patient",
+     "caregiver"
+    ],
+    "public": false
+   },
+   "choose_slot": {
+    "roles": [
+     "patient",
+     "caregiver"
+    ],
+    "public": false,
+    "scope": "log"
+   },
+   "waitlist_answer": {
+    "roles": [
+     "patient",
+     "caregiver"
+    ],
+    "public": false,
+    "scope": "log"
+   },
+   "dispatch_page": {
+    "roles": [
+     "receptionist",
+     "clinic_admin",
+     "nurse",
+     "doctor"
+    ],
+    "public": false
+   },
+   "accept": {
+    "roles": [
+     "receptionist",
+     "clinic_admin",
+     "nurse",
+     "doctor"
+    ],
+    "public": false
+   },
+   "offer": {
+    "roles": [
+     "receptionist",
+     "clinic_admin",
+     "nurse",
+     "doctor"
+    ],
+    "public": false
+   },
+   "reassign": {
+    "roles": [
+     "receptionist",
+     "clinic_admin",
+     "nurse",
+     "doctor"
+    ],
+    "public": false
+   },
+   "decline": {
+    "roles": [
+     "receptionist",
+     "clinic_admin",
+     "nurse",
+     "doctor"
+    ],
+    "public": false
+   },
+   "walk_in": {
+    "roles": [
+     "receptionist",
+     "clinic_admin",
+     "nurse",
+     "doctor"
+    ],
+    "public": false
+   },
+   "set_status": {
+    "roles": [
+     "receptionist",
+     "clinic_admin",
+     "nurse",
+     "doctor"
+    ],
+    "public": false
+   },
+   "waitlist_add": {
+    "roles": [
+     "receptionist",
+     "clinic_admin",
+     "nurse",
+     "doctor"
+    ],
+    "public": false
+   },
+   "waitlist_remove": {
+    "roles": [
+     "receptionist",
+     "clinic_admin",
+     "nurse",
+     "doctor"
+    ],
+    "public": false
+   },
+   "queue_page": {
+    "roles": [
+     "doctor"
+    ],
+    "public": false
+   },
+   "visit_save": {
+    "roles": [
+     "doctor"
+    ],
+    "public": false
+   },
+   "visit_hints": {
+    "roles": [
+     "doctor"
+    ],
+    "public": false
+   },
+   "visit_sign": {
+    "roles": [
+     "doctor"
+    ],
+    "public": false
+   },
+   "catalog_page": {
+    "roles": [
+     "receptionist",
+     "clinic_admin",
+     "nurse",
+     "doctor",
+     "platform_admin"
+    ],
+    "public": false
+   },
+   "analytics_page": {
+    "roles": [
+     "receptionist",
+     "clinic_admin",
+     "nurse",
+     "doctor",
+     "platform_admin"
+    ],
+    "public": false
+   },
+   "specialty_save": {
+    "roles": [
+     "clinic_admin",
+     "platform_admin"
+    ],
+    "public": false
+   },
+   "doctor_save": {
+    "roles": [
+     "clinic_admin",
+     "platform_admin"
+    ],
+    "public": false
+   },
+   "service_save": {
+    "roles": [
+     "clinic_admin",
+     "platform_admin"
+    ],
+    "public": false
+   }
+  }
+ }
+]

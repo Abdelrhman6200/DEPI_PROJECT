@@ -1,0 +1,10 @@
+**/node_modules
+**/.next
+.git
+.env
+.env.*
+infra/n8n-credentials.json
+infra/hostinger/.env
+ai/evals/results
+archive
+**/*.log

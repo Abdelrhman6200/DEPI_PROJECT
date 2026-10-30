@@ -1,0 +1,2057 @@
+{
+ "note": "Safety rules (app.safety_rules) and Arabic error messages (app.error_messages). Edit here and run scripts/sheets-setup.mjs; a rule edited in the spreadsheet is replaced on the next setup run.",
+ "safety_rules": [
+  {
+   "code": "phi_patterns",
+   "kind": "ai_gate",
+   "active": true,
+   "config": {
+    "patterns": [
+     {
+      "re": "[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}",
+      "type": "email"
+     },
+     {
+      "re": "\\b(?:https?:\\/\\/|www\\.)[^\\s<>\"']+",
+      "type": "url",
+      "flags": "i"
+     },
+     {
+      "re": "(?<![\\d])[23]\\d{2}(?:0[1-9]|1[0-2])(?:0[1-9]|[12]\\d|3[01])\\d{7}(?!\\d)",
+      "type": "national_id"
+     },
+     {
+      "re": "(?<![\\d+])(?:(?:\\+|00)20[\\s.-]?|0)1[0125]\\d?[\\s.-]?\\d{3,4}[\\s.-]?\\d{3,4}(?!\\d)",
+      "type": "phone"
+     },
+     {
+      "re": "(?<![\\d.,/])0(?:2[\\s.-]?\\d{4}[\\s.-]?\\d{4}|3[\\s.-]?\\d{3}[\\s.-]?\\d{4}|[4-9]\\d[\\s.-]?\\d{3}[\\s.-]?\\d{4})(?!\\d)",
+      "type": "phone"
+     },
+     {
+      "re": "\\+(?!20)\\d{1,3}(?:[\\s.-]?\\d){7,12}(?!\\d)",
+      "type": "phone"
+     },
+     {
+      "re": "\\bMRN[\\s:#-]*[A-Z0-9][A-Z0-9-]{2,}\\b",
+      "type": "mrn",
+      "flags": "i"
+     },
+     {
+      "re": "(?:^|\\s)(?:عماره|عمارة|برج|شقه|شقة)\\s*(?:رقم\\s*)?\\d+[^\\n,،.]{0,40}",
+      "type": "address",
+      "flags": ""
+     },
+     {
+      "re": "\\b\\d{1,5}\\s+(?:[A-Z][a-z]+\\s+){1,3}(?:Street|St|Road|Rd|Avenue|Ave)\\b\\.?",
+      "type": "address"
+     },
+     {
+      "re": "(?<![\\d.,/])\\d{9,}(?!\\d)",
+      "type": "id_number"
+     },
+     {
+      "re": "\\b(?:my name is|my name's|call me)\\s+(\\p{Lu}\\p{Ll}+(?:\\s+\\p{Lu}\\p{Ll}+){0,2})",
+      "type": "name",
+      "flags": "i",
+      "group": 1
+     },
+     {
+      "re": "(?:^|\\s)(?:انا اسمي|أنا اسمي|اسمي|إسمي)\\s+(\\p{L}{2,})",
+      "type": "name",
+      "group": 1
+     },
+     {
+      "re": "\\b(?:[Mm]y\\s+|[Oo]ur\\s+)?(?:[Nn]eighbou?r|[Ff]riend|[Bb]rother|[Ss]ister|[Cc]ousin|[Cc]olleague|[Uu]ncle|[Aa]unt|[Ss]on|[Dd]aughter|[Ww]ife|[Hh]usband|[Mm]other|[Ff]ather|[Mm]um|[Mm]om|[Dd]ad|[Gg]randmother|[Gg]randfather|[Bb]oss|[Nn]ephew|[Nn]iece)\\s+(\\p{Lu}\\p{Ll}+(?:\\s+\\p{Lu}\\p{Ll}+){0,2})",
+      "type": "name",
+      "group": 1,
+      "note": "another person named after a relation word (English, capitalised)"
+     },
+     {
+      "re": "(?:^|\\s)(?:جاري|جارتي|جارنا|صاحبي|صاحبتي|صديقي|صديقتي|اخويا|أخويا|أخي|اخي|اختي|أختي|زميلي|زميلتي|عمي|خالي|عمتي|خالتي|ابني|بنتي|مراتي|جوزي|زوجي|زوجتي|ابن عمي|بنت عمي|ابن خالي|بنت خالي)\\s+(?!(?:عنده|عندها|عندهم|كان|كانت|قال|قالت|بيقول|بتقول|بياخد|بتاخد|مريض|مريضة|عيان|عيانة|تعبان|تعبانة|هو|هي|ده|دي|اللي|برضه|كمان|سكر|سكره|سكرها|عنده|جاله|جالها|ماخد|واخد|واخدة|بيعاني|بتعاني)(?:\\s|$|[؟?.,،!]))(\\p{L}{2,})",
+      "type": "name",
+      "group": 1,
+      "note": "another person named after a relation word (Arabic, one word)"
+     }
+    ],
+    "replacements": {
+     "dob": "[date_of_birth]",
+     "mrn": "[mrn]",
+     "url": "[link]",
+     "name": "[name]",
+     "email": "[email]",
+     "phone": "[phone]",
+     "address": "[address]",
+     "id_number": "[id_number]",
+     "national_id": "[national_id]"
+    },
+    "name_stoplist": [
+     "said",
+     "will",
+     "may",
+     "hope",
+     "grace",
+     "faith",
+     "joy",
+     "june",
+     "rose",
+     "dr",
+     "doctor",
+     "امل",
+     "نور",
+     "صباح",
+     "سعيد",
+     "كريم",
+     "جميل",
+     "جميله",
+     "هدي",
+     "ايمان",
+     "سلام",
+     "رحمه",
+     "نعمه",
+     "عادل",
+     "حسن",
+     "فرح",
+     "وفاء",
+     "صفاء",
+     "هناء",
+     "نجاح",
+     "شمس",
+     "قمر",
+     "دكتور",
+     "الدكتور"
+    ],
+    "output_allowed_numbers": [
+     "70",
+     "180",
+     "54",
+     "250",
+     "300",
+     "400",
+     "15",
+     "123",
+     "7",
+     "8",
+     "4",
+     "1",
+     "5",
+     "25",
+     "36",
+     "50",
+     "30",
+     "45",
+     "60",
+     "130",
+     "80"
+    ]
+   },
+   "description": "Identifier patterns removed from text before it reaches a cloud model, and from model output (JavaScript regex). Known identifiers of the patient and their family are added at run time by app.fn_ai_gate."
+  },
+  {
+   "code": "prompt_injection",
+   "kind": "ai_gate",
+   "active": true,
+   "config": {
+    "base64": {
+     "weight": 1,
+     "min_length": 60
+    },
+    "signals": [
+     {
+      "id": "override",
+      "re": "\\b(?:ignore|disregard|forget|override|bypass|abandon)\\b(?: \\S+){0,3}? (?:all|any|every|your|previous|prior|above|earlier|preceding|initial|original|system|developer|safety)(?: \\S+){0,2}? (?:instructions?|rules|prompts?|guidelines|directions|guardrails|restrictions|constraints|programming|polic(?:y|ies)|context)\\b",
+      "weight": 3
+     },
+     {
+      "id": "override",
+      "re": "\\b(?:ignore|disregard|forget)\\b (?:everything|all|anything) (?:above|before|previous(?:ly)?|you (?:were|have been) told|said before|so far)\\b",
+      "weight": 3
+     },
+     {
+      "id": "override_weak",
+      "re": "\\b(?:ignore|disregard|forget|override|bypass)\\b(?: \\S+){0,2}? (?:instructions?|rules|guidelines|guardrails|restrictions)\\b",
+      "weight": 1
+     },
+     {
+      "id": "override_ar",
+      "re": "(?:^| )(?:تجاهل|تتجاهل|انس|انسي|انسا|اهمل|الغي|الغ|متلتزمش|ماتلتزمش|لا تلتزم)\\S*(?: \\S+){0,2}? (?:ال)?(?:تعليمات|اوامر|قواعد|قيود|توجيهات|برومبت)",
+      "weight": 3
+     },
+     {
+      "id": "role_hijack",
+      "re": "\\b(?:you are|youre|you r|u r|u are) (?:now|no longer|not an? (?:ai|assistant|bot|companion|language model))\\b|\\bfrom now on\\b(?: \\S+){0,4}? (?:you|u)\\b|\\bpretend (?:to be|you are|youre|that you)\\b|\\brole ?play\\b|\\b(?:act|behave|respond|answer|speak|reply) (?:as|like) (?:an? |my |the )?(?:doctor|physician|pharmacist|endocrinologist|unrestricted|uncensored|unfiltered|evil|different|human|admin|developer|system)\\b|\\b(?:dan|developer|god|sudo|admin|jailbreak|unrestricted|unfiltered) mode\\b|\\bdo anything now\\b|\\bjailbr(?:eak|oken)\\b|\\bno (?:restrictions|filters|rules|limits|guardrails)\\b",
+      "weight": 2
+     },
+     {
+      "id": "role_hijack_ar",
+      "re": "(?:^| )(?:انت|انتي) (?:دلوقتي|الان|من دلوقتي|من الان)|(?:^| )(?:اتصرف|تصرف|رد|اتكلم|جاوب) (?:ك|زي|كانك|علي انك) ?(?:دكتور|طبيب|صيدلي|ادمن|مطور)|(?:^| )(?:تقمص|العب دور|مثل دور|اعتبر نفسك)|من (?:دلوقتي|الان) (?:انت|هتبقي|هتكون)|بدون (?:قيود|قواعد|فلتر)",
+      "weight": 2
+     },
+     {
+      "id": "prompt_exfil",
+      "re": "\\b(?:system|initial|hidden|original|developer|secret|internal|full) (?:prompt|message|instructions)\\b|\\b(?:reveal|show|print|display|repeat|output|dump|leak|tell me|give me|write|list|copy|paste|translate)\\b(?: \\S+){0,4}? (?:your|the system|the hidden|the initial) (?:instructions|prompt|system message|configuration|context window)\\b|\\brepeat (?:the|everything|all|the text|the words) (?:above|before)\\b|\\bwhat (?:were|are) you (?:told|instructed|programmed)\\b|\\binternal reference code\\b",
+      "weight": 3
+     },
+     {
+      "id": "prompt_exfil_weak",
+      "re": "\\byour (?:rules|guidelines|instructions|prompt)\\b",
+      "weight": 2
+     },
+     {
+      "id": "prompt_exfil_ar",
+      "re": "(?:ال)?(?:تعليمات|برومبت|اوامر|قواعد|اعدادات)\\S* (?:بتاعتك|بتاعك|بتوعك|الخاصه بك|اللي اتقالتلك|اللي اتقالك|السريه|المخفيه|الاصليه|بتاعه السيستم|بتاعه النظام|بتاع السيستم|بتاع النظام)|(?:برومبت|تعليمات|رساله)\\S*(?: \\S+){0,2}? (?:ال)?(?:نظام|سيستم)",
+      "weight": 3
+     },
+     {
+      "id": "prompt_exfil_ar_weak",
+      "re": "(?:^| )(?:ال)?برومبت",
+      "weight": 2
+     },
+     {
+      "id": "data_exfil",
+      "re": "\\b(?:all|other|every|another|different) (?:patients?|users?|people|members|accounts?)(?: \\S+){0,3}? (?:data|records?|readings?|information|info|names?|files?|details|phones?|emails?|history|list)\\b|\\b(?:data|records?|readings?|information|names?|files?|details|list) (?:of|for|from|about) (?:(?:all|every|any) (?:the )?(?:other |another )?|(?:the )?(?:other|another|different) )(?:patients?|users?|people|accounts?)\\b|\\b(?:select \\* from|drop table|union select|insert into|delete from)\\b|\\b(?:api key|access token|secret key|env(?:ironment)? variables?|credentials|connection string)\\b",
+      "weight": 3
+     },
+     {
+      "id": "data_exfil_weak",
+      "re": "\\b(?:database|sql|password|admin panel)\\b",
+      "weight": 1
+     },
+     {
+      "id": "data_exfil_ar",
+      "re": "(?:بيانات|ملفات|سجلات|اسماء|ارقام|قرايات|قراءات|تحاليل)\\S* (?:كل |باقي |بقيه )?(?:ال)?(?:مرضي|عيانين|مستخدمين|ناس التانيه|حالات التانيه)|(?:قاعده البيانات|الداتابيز|الداتا بيز)",
+      "weight": 3
+     },
+     {
+      "id": "delimiter_spoof",
+      "re": "[⟦⟧]|<\\|? ?(?:im start|im end|system|endoftext|eot id|start header id|end header id)\\b|\\[\\/?(?:inst|sys|system)\\]|<<\\/?sys>>|<\\/?(?:system|assistant|developer|instructions?|tool call|tool)>|\\b(?:begin|end) (?:system|instructions?) (?:prompt|message|block)\\b",
+      "weight": 3
+     },
+     {
+      "id": "exfil_channel",
+      "re": "\\b(?:send|post|upload|forward|email|fetch|visit|open|load|include|embed)\\b(?: \\S+){0,6}? (?:https?:\\/\\/|www\\.)|!\\[[^\\]]*\\]\\(",
+      "weight": 2
+     },
+     {
+      "id": "override_latin_ar",
+      "re": "\\b(?:etgahel|etgahl|tgahel|tegahel|ensa|ensy|insa|matltzemsh|matelzamsh)\\b(?: \\S+){0,3}? (?:el ?)?(?:ta3limat|t3limat|ta3leemat|t3leemat|awamer|2awamer|qawa3ed|2awa3ed|rules|instructions|prompt)\\b",
+      "weight": 3
+     },
+     {
+      "id": "exfil_latin_ar",
+      "re": "\\b(?:2ol|2oly|2olly|2olli|2ooly|ektebly|ekteb ?li|wareeny|warini|warrini)\\b(?: \\S+){0,4}? (?:el ?)?(?:prompt|ta3limat|t3limat|ta3leemat|instructions|system)\\b",
+      "weight": 3
+     },
+     {
+      "id": "translate_above",
+      "re": "\\b(?:translate|summari[sz]e|paraphrase|rewrite|encode|repeat|spell out)\\b(?: \\S+){0,5}? (?:above|before) (?:this|my) (?:line|message)\\b|\\b(?:translate|summari[sz]e|paraphrase|rewrite|encode|spell out)\\b(?: \\S+){0,5}? (?:you were given|you were told|your instructions)\\b",
+      "weight": 3
+     },
+     {
+      "id": "translate_above_weak",
+      "re": "\\b(?:translate|summari[sz]e|paraphrase|encode|spell out)\\b(?: \\S+){0,4}? (?:everything|all of it|the text|the instructions|what you have|the words)(?: \\S+){0,2}? (?:above|before|earlier)\\b",
+      "weight": 2
+     },
+     {
+      "id": "authority_claim",
+      "re": "\\b(?:as|i am|im) (?:the |your |her |his |a |an )?(?:treating |attending |head )?(?:doctor|physician|clinician|developer|admin|administrator|system administrator|nurse|pharmacist|endocrinologist)\\b(?: \\S+){0,6}? (?:authori[sz]e|allow|permit|order|instruct|override|approve|give you permission)\\w*|\\bi (?:authori[sz]e|permit|allow) you to\\b",
+      "weight": 2
+     },
+     {
+      "id": "authority_claim_ar",
+      "re": "(?:^| )(?:انا|بصفتي) (?:ال)?(?:دكتور|طبيب|دكتوره|ممرض|ممرضه|مطور|ادمن)\\S*(?: \\S+){0,5}? [وف]?(?:بسمحلك|اسمحلك|سامحلك|مسموحلك|بامرك|بديك الاذن|اديك الاذن)|(?:^| )(?:انت|انتي) مش (?:مساعد|بوت|برنامج|ذكاء)",
+      "weight": 2
+     },
+     {
+      "id": "prompt_exfil_ar_above",
+      "re": "(?:^| )(?:قول|قولي|قوللي|اكتب|اكتبلي|ترجم|ترجملي|لخص|لخصلي|كرر|اعرض|وريني|ورينى)\\S*(?: \\S+){0,3}? (?:ال)?(?:تعليمات|اوامر|نص|كلام|رساله)\\S* (?:اللي|الي) (?:فوق|قبل كده|قبل كدا|اتقالتلك|اتقالك|اديتهالك|في الاول)",
+      "weight": 3
+     },
+     {
+      "id": "tool_abuse",
+      "re": "\\b(?:call|invoke|use|run|execute|trigger)\\b(?: the)? (?:tool|function|consult medgemma|search guidelines|get glucose metrics|check medicine|find care|sql|query)\\b",
+      "weight": 1
+     }
+    ],
+    "block_at": 3,
+    "reply_ar": "أستطيع المساعدة فقط في أسئلة رعايتك لمرض السكر، مثل قراءاتك وأدويتك وأكلك ونشاطك وخطة الرعاية. لا أستطيع تغيير طريقة عملي أو مشاركة تفاصيل النظام أو بيانات أشخاص آخرين. ماذا تحب أن تعرف؟",
+    "reply_en": "I can only help with questions about your own diabetes care, such as your readings, medicines, food, activity, or care plan. I cannot change how I work or share system details or other people's information. What would you like to know?",
+    "invisible": {
+     "tag_weight": 3,
+     "bidi_weight": 2,
+     "zero_width_weight": 1
+    },
+    "raw_signals": [
+     {
+      "id": "header_spoof",
+      "re": "^\\s*(?:#+\\s*)?(?:system|assistant|developer|patient context|policy|retrieved guidance|tool facts|draft answer|medicine checks|recent conversation|security|authority rules)\\b[^\\n]{0,40}:",
+      "flags": "im",
+      "weight": 2
+     }
+    ],
+    "suspicious_at": 2
+   },
+   "description": "Prompt-injection screen (JavaScript regex, weighted). A message at block_at or above gets a fixed reply and no model call; at suspicious_at the answer must be approved by the verifier."
+  },
+  {
+   "code": "companion_gate",
+   "kind": "ai_gate",
+   "active": true,
+   "config": {
+    "per_day": 300,
+    "rate_ar": "أرسلت رسائل كثيرة في وقت قصير، لذلك سيتوقف المساعد قليلًا. حاول مرة أخرى لاحقًا. إذا شعرت بتعب استخدم زر الطوارئ أو اتصل بـ 123.",
+    "rate_en": "You have sent a lot of messages in a short time, so the assistant is taking a short break. Please try again later. If you feel unwell, use the Emergency button or call 123.",
+    "per_hour": 60,
+    "no_consent_ar": "المساعد الذكي متوقف لحسابك لأنه لم تتم الموافقة على المعالجة بالذكاء الاصطناعي. ما زال يمكنك متابعة قراءاتك وخطة رعايتك ومراسلة فريق الرعاية أو استخدام \"احتاج رعاية\". في الطوارئ اتصل بـ 123.",
+    "no_consent_en": "The AI assistant is switched off for your account because AI processing has not been agreed. You can still review your readings and care plan, message your care team, or use Need Care. In an emergency call 123."
+   },
+   "description": "Companion message limits per patient and the fixed texts used when a gate stops a request before any model runs"
+  },
+  {
+   "code": "ai_budget",
+   "kind": "ai_gate",
+   "active": true,
+   "config": {
+    "breaker_failures": 3,
+    "cloud_calls_per_day": 400,
+    "breaker_window_minutes": 10,
+    "cloud_calls_per_patient_per_day": 60
+   },
+   "description": "Cloud model budget (free tier) and circuit breaker: when the daily budget is used, or the cloud model failed repeatedly in the last minutes, AI work stays on the local model"
+  },
+  {
+   "code": "ai_judge",
+   "kind": "ai_gate",
+   "active": true,
+   "config": {
+    "sample_pct": 100,
+    "daily_max": 120,
+    "lookback_days": 7,
+    "min_age_minutes": 2,
+    "excerpt_chars": 300
+   },
+   "description": "LLM-as-a-judge (WF-025): flagged AI answers are always judged, others sampled (sample_pct (100: every answer, the course rubric asks for every output); scores go to the ai_trials tab and problems to incidents"
+  },
+  {
+   "code": "rag_config",
+   "kind": "rag",
+   "active": true,
+   "config": {
+    "glossary": [
+     {
+      "en": "hba1c average glucose",
+      "terms": [
+       "تراكمي",
+       "تراكم",
+       "hba1c",
+       "a1c",
+       "tarakomy",
+       "tarakomi",
+       "tarakmy",
+       "tarakumy",
+       "el3ayena",
+       "تراكمى"
+      ]
+     },
+     {
+      "en": "hypoglycemia low blood sugar",
+      "terms": [
+       "هبوط",
+       "واطي",
+       "منخفض",
+       "انخفاض",
+       "وطي",
+       "بيوطي",
+       "نازل",
+       "نزل",
+       "wate",
+       "wati",
+       "waty",
+       "watye",
+       "hbot",
+       "hboot",
+       "hobot",
+       "nazel",
+       "nazl",
+       "hypo"
+      ]
+     },
+     {
+      "en": "high blood sugar hyperglycemia",
+      "terms": [
+       "ارتفاع",
+       "عالي",
+       "مرتفع",
+       "طالع",
+       "بيعلي",
+       "3aly",
+       "3ali",
+       "3aaly",
+       "mortefe3",
+       "erte3a3",
+       "hyper"
+      ]
+     },
+     {
+      "en": "ramadan fasting",
+      "terms": [
+       "رمضان",
+       "صيام",
+       "صوم",
+       "اصوم",
+       "صايم",
+       "صايمه",
+       "افطار",
+       "سحور",
+       "ramadan",
+       "ramadhan",
+       "ramdan",
+       "asoom",
+       "asom",
+       "asoum",
+       "sayem",
+       "sayma",
+       "seyam",
+       "siyam",
+       "soum",
+       "sawm",
+       "sohoor",
+       "so7oor"
+      ]
+     },
+     {
+      "en": "diabetic foot care wound",
+      "terms": [
+       "قدم",
+       "قدمي",
+       "رجل",
+       "رجلي",
+       "صباع",
+       "صباعي",
+       "اصبع",
+       "اصابع",
+       "جرح",
+       "جروح",
+       "قرحه",
+       "صديد",
+       "regl",
+       "regly",
+       "rigl",
+       "rigli",
+       "rgly",
+       "adamy",
+       "2adamy",
+       "garh",
+       "gar7",
+       "gerh",
+       "gro7",
+       "swaba3",
+       "saba3y",
+       "رجليه",
+       "رجلين"
+      ]
+     },
+     {
+      "en": "kidney function egfr",
+      "terms": [
+       "كلي",
+       "كلاوي",
+       "كليه",
+       "كرياتينين",
+       "زلال",
+       "kela",
+       "kelya",
+       "kalawy",
+       "kelawy"
+      ]
+     },
+     {
+      "en": "metformin kidney",
+      "terms": [
+       "ميتفورمين",
+       "جلوكوفاج",
+       "سيدوفاج",
+       "metformin",
+       "glucophage",
+       "cidophage",
+       "glucophag"
+      ]
+     },
+     {
+      "en": "insulin",
+      "terms": [
+       "انسولين",
+       "لانتوس",
+       "ميكستارد",
+       "حقن",
+       "ابره",
+       "ensolin",
+       "insolin",
+       "enslin",
+       "lantus",
+       "mixtard",
+       "7o2na",
+       "ebra"
+      ]
+     },
+     {
+      "en": "blood pressure",
+      "terms": [
+       "ضغط",
+       "dagh",
+       "daght",
+       "da8t",
+       "pressure"
+      ]
+     },
+     {
+      "en": "cholesterol ldl",
+      "terms": [
+       "كوليسترول",
+       "كولسترول",
+       "دهون"
+      ]
+     },
+     {
+      "en": "eye screening retinopathy",
+      "terms": [
+       "عين",
+       "عيني",
+       "عيون",
+       "نظر",
+       "شبكيه",
+       "زغلله",
+       "3een",
+       "3eny",
+       "3enya",
+       "ainy",
+       "nazar",
+       "shabakeya"
+      ]
+     },
+     {
+      "en": "physical activity exercise walking",
+      "terms": [
+       "رياضه",
+       "مشي",
+       "تمارين",
+       "تمرين",
+       "نشاط",
+       "جيم",
+       "امشي",
+       "بمشي",
+       "نمشي",
+       "المشي",
+       "mashy",
+       "amshy",
+       "bamshy",
+       "riyada",
+       "reyada",
+       "gym",
+       "tamreen"
+      ]
+     },
+     {
+      "en": "breakfast meal healthy eating egyptian foods",
+      "terms": [
+       "فطار",
+       "فطور",
+       "breakfast"
+      ]
+     },
+     {
+      "en": "healthy eating egyptian foods carbohydrates",
+      "terms": [
+       "اكل",
+       "طعام",
+       "وجبه",
+       "وجبات",
+       "غدا",
+       "عشا",
+       "كشري",
+       "فول",
+       "عيش",
+       "رز",
+       "ارز",
+       "نشويات",
+       "كربوهيدرات",
+       "حلويات",
+       "بلح",
+       "تمر",
+       "فاكهه",
+       "عصير",
+       "koshari",
+       "bread",
+       "rice",
+       "foul",
+       "beans",
+       "fruit",
+       "juice",
+       "sweets",
+       "dessert",
+       "carb",
+       "carbs",
+       "meal",
+       "meals",
+       "food",
+       "foods",
+       "eat",
+       "eating",
+       "diet",
+       "snack",
+       "akl",
+       "aakol",
+       "akol",
+       "3eesh",
+       "3esh",
+       "roz",
+       "rozz",
+       "koshary",
+       "fool",
+       "fetar",
+       "aklat",
+       "نآكل",
+       "آكل"
+      ]
+     },
+     {
+      "en": "cgm time in range",
+      "terms": [
+       "حساس",
+       "سنسور",
+       "cgm",
+       "النطاق",
+       "مدي",
+       "tir"
+      ]
+     },
+     {
+      "en": "sick day illness",
+      "terms": [
+       "عيان",
+       "تعبان",
+       "برد",
+       "انفلونزا",
+       "اسهال",
+       "ترجيع",
+       "سخونيه",
+       "حراره",
+       "كحه",
+       "3ayan",
+       "3ayana",
+       "3ayyan",
+       "ta3ban",
+       "ta3bana",
+       "bard",
+       "sokhneya",
+       "so5neya",
+       "ishal",
+       "es-hal",
+       "targee3",
+       "kohha",
+       "دور"
+      ]
+     },
+     {
+      "en": "physical activity exercise walking",
+      "terms": [
+       "walk",
+       "walking",
+       "exercise"
+      ]
+     },
+     {
+      "en": "lab test results blood test fasting before a blood test",
+      "terms": [
+       "تحليل",
+       "تحاليل",
+       "نتيجه",
+       "نتايج",
+       "معمل",
+       "lab",
+       "test",
+       "results"
+      ]
+     },
+     {
+      "en": "complete blood count cbc hemoglobin anemia",
+      "terms": [
+       "صوره",
+       "هيموجلوبين",
+       "انيميا",
+       "فقر",
+       "cbc"
+      ]
+     },
+     {
+      "en": "creatinine test kidney function egfr",
+      "terms": [
+       "كرياتينين",
+       "creatinine",
+       "egfr"
+      ]
+     },
+     {
+      "en": "potassium blood test",
+      "terms": [
+       "بوتاسيوم",
+       "potassium"
+      ]
+     },
+     {
+      "en": "liver function tests alt enzymes",
+      "terms": [
+       "كبد",
+       "انزيمات",
+       "alt",
+       "liver"
+      ]
+     },
+     {
+      "en": "vitamin b12 test",
+      "terms": [
+       "فيتامين",
+       "b12"
+      ]
+     },
+     {
+      "en": "urine test albumin microalbumin ketones",
+      "terms": [
+       "بول",
+       "زلال",
+       "كيتون",
+       "urine",
+       "albumin",
+       "ketones"
+      ]
+     },
+     {
+      "en": "triglycerides cholesterol test lipid panel",
+      "terms": [
+       "دهون",
+       "ثلاثيه",
+       "triglycerides",
+       "lipid"
+      ]
+     },
+     {
+      "en": "blood urea nitrogen bun",
+      "terms": [
+       "يوريا",
+       "bun",
+       "urea"
+      ]
+     }
+    ],
+    "stopwords": [
+     "the",
+     "and",
+     "for",
+     "with",
+     "what",
+     "does",
+     "did",
+     "how",
+     "why",
+     "when",
+     "where",
+     "which",
+     "who",
+     "are",
+     "was",
+     "were",
+     "can",
+     "could",
+     "should",
+     "would",
+     "will",
+     "have",
+     "has",
+     "had",
+     "this",
+     "that",
+     "these",
+     "those",
+     "there",
+     "about",
+     "from",
+     "into",
+     "your",
+     "you",
+     "mine",
+     "our",
+     "they",
+     "them",
+     "their",
+     "its",
+     "not",
+     "but",
+     "any",
+     "all",
+     "also",
+     "just",
+     "very",
+     "much",
+     "many",
+     "some",
+     "more",
+     "most",
+     "than",
+     "then",
+     "too",
+     "get",
+     "got",
+     "tell",
+     "know",
+     "please",
+     "mean",
+     "means",
+     "doe",
+     "thing",
+     "today",
+     "now",
+     "may",
+     "one",
+     "out",
+     "own",
+     "use",
+     "way",
+     "his",
+     "her",
+     "him",
+     "she",
+     "let",
+     "see",
+     "say",
+     "yes",
+     "off",
+     "per",
+     "via",
+     "okay",
+     "need",
+     "want",
+     "like",
+     "feel",
+     "take",
+     "make",
+     "diabete",
+     "هل",
+     "ايه",
+     "ازاي",
+     "ليه",
+     "امتي",
+     "فين",
+     "مين",
+     "انا",
+     "انت",
+     "هو",
+     "هي",
+     "احنا",
+     "دي",
+     "ده",
+     "دا",
+     "اللي",
+     "الذي",
+     "التي",
+     "في",
+     "من",
+     "علي",
+     "عن",
+     "الي",
+     "مع",
+     "بعد",
+     "قبل",
+     "كده",
+     "كدا",
+     "يعني",
+     "عايز",
+     "عاوز",
+     "عايزه",
+     "ممكن",
+     "ينفع",
+     "بتاعي",
+     "بتاعتي",
+     "بتوعي",
+     "عندي",
+     "ليا",
+     "لي",
+     "كان",
+     "كانت",
+     "بس",
+     "لو",
+     "او",
+     "ولا",
+     "ما",
+     "مش",
+     "لا",
+     "ماذا",
+     "كيف",
+     "متي",
+     "اين",
+     "لماذا",
+     "عند",
+     "لما",
+     "اما",
+     "احنا",
+     "عشان",
+     "علشان",
+     "كمان",
+     "برضه",
+     "دلوقتي",
+     "هذا",
+     "هذه",
+     "ذلك",
+     "تلك",
+     "شيء",
+     "حاجه",
+     "اعمل",
+     "افعل",
+     "best",
+     "better",
+     "good",
+     "great",
+     "ways",
+     "things",
+     "really",
+     "anything",
+     "something"
+    ],
+    "min_similarity": 0.6,
+    "domain_stopwords": [
+     "diabetes",
+     "diabetic",
+     "sugar",
+     "glucose",
+     "blood",
+     "level",
+     "levels",
+     "سكر",
+     "سكري",
+     "دم",
+     "مستوي",
+     "نسبه"
+    ],
+    "near_miss_margin": 0.05,
+    "strong_fts_terms": 2,
+    "fts_only_coverage": 0.6,
+    "max_content_chars": 1200,
+    "max_chunks_per_doc": 2,
+    "strong_terms_margin": 0.12,
+    "max_chunks_per_source": 3,
+    "min_similarity_ar_doc": 0.8,
+    "relative_margin": 0.08
+   },
+   "description": "RAG retrieval: relevance floors (cosine similarity, calibrated for nomic-embed-text), per-document cap, stop words and the Arabic-to-English glossary used to expand queries"
+  },
+  {
+   "code": "glucose_thresholds",
+   "kind": "glucose_threshold",
+   "active": true,
+   "config": {
+    "hypo": 70,
+    "hyper": 250,
+    "messages": {
+     "hypo": {
+      "ar": "السكر منخفض ({value} مجم/دل). إذا كنت تستطيع البلع بأمان، تناول 15 جرام سكر سريع (3 ملاعق صغيرة سكر في ماء أو نصف كوب عصير) وأعد القياس بعد 15 دقيقة. كرر إذا ظل أقل من 70. إذا شعرت بدوخة شديدة أو تشوش اتصل بـ 123.",
+      "en": "Your glucose is low ({value} mg/dL). If you can swallow safely, take 15 g of fast sugar (3 teaspoons of sugar in water or half a cup of juice) and recheck in 15 minutes. Repeat if still below 70. If you feel confused or faint, call 123."
+     },
+     "hyper": {
+      "ar": "السكر مرتفع ({value} مجم/دل). اشرب ماء وتناول أدويتك كما وصفها الطبيب وأعد القياس بعد ساعتين. تواصل مع فريق الرعاية إذا استمر الارتفاع أو شعرت بتعب.",
+      "en": "Your glucose is high ({value} mg/dL). Drink water, take your medicines as prescribed, and recheck in 2 hours. Contact your care team if it stays high or you feel unwell."
+     },
+     "severe_hypo": {
+      "ar": "السكر منخفض جدًا ({value} مجم/دل). تناول 15 جرام سكر سريع الآن إذا كنت تستطيع البلع واطلب من أحد البقاء معك. إذا كان هناك تشوش أو نعاس شديد أو عدم قدرة على البلع يجب الاتصال بـ 123 فورًا.",
+      "en": "Your glucose is very low ({value} mg/dL). Take 15 g of fast sugar now if you can swallow safely and ask someone to stay with you. If you are confused, drowsy, or cannot swallow, someone must call 123 immediately."
+     },
+     "severe_hyper": {
+      "ar": "السكر مرتفع جدًا ({value} مجم/دل). إذا كان لديك قيء أو ألم في البطن أو تنفس سريع أو تشوش توجه للطوارئ أو اتصل بـ 123 الآن. وإلا تواصل مع فريق الرعاية اليوم.",
+      "en": "Your glucose is very high ({value} mg/dL). If you have vomiting, abdominal pain, fast breathing, or confusion, go to the emergency department or call 123 now. Otherwise contact your care team today."
+     }
+    },
+    "severe_hypo": 54,
+    "severe_hyper": 400
+   },
+   "description": "Glucose event thresholds (mg/dL) and fixed patient guidance text"
+  },
+  {
+   "code": "emergency_patterns",
+   "kind": "emergency_patterns",
+   "active": true,
+   "config": {
+    "unless_ar": "ايه (هي|هو)|يعني ايه|ما (هي|هو)|معني|من سنين|من سنه|من زمان|السنه اللي فاتت|الوقايه من|(شد|تقلص|تشنج|تشنجات|مغص)\\S*( \\S+)? (عضلي )?(في|ف) (ال)?(رجل|رجلي|عضل|عضله|قدم|ساق|سمانه|بطن)|مغص|(وقعت|وقع|اتخبطت|اتلوت|اتكسرت|كسر|التواء|ملتوي\\S*)\\S*.{0,50}(وارم\\S*|ورم|بتوجع\\S*|بيوجع\\S*|الم).{0,30}مش (قادر|قادره) (احرك|يحرك|تحرك)",
+    "unless_en": "\\y(what is|what are|what does|what causes|how to prevent|years? ago|last year|months? ago|history of|risk of|leg cramps?|muscle cramps?|cramps? in my (leg|legs|foot|feet|calf)|after (a|the|my) (fall|injury|accident)|since i (fell|twisted|hurt))\\y",
+    "categories": [
+     {
+      "ar": "(الم|وجع|نغز|ضغط|تقل)\\s?(شديد |جامد |قوي )?(في|ف|علي|ب)\\s?(ال)?صدر|صدر\\S* (بيوجع|واجع|مكتوم|تقيل|مضغوط|بيتعصر|بيتقبض)|قلب\\S* (بيوجع|واجع)|ضيق (في |ف )?(ال)?صدر|(دراع|كتف)\\S* (ال)?(شمال|يسار).{0,40}(صدر|عرق)|(صدر|عرق).{0,40}(دراع|كتف)\\S* (ال)?(شمال|يسار)|ازمه قلبيه|ذبحه|جلطه في القلب|نوبه قلبيه",
+      "en": "\\ychest (pain|pains|pressure|tightness|is tight|hurts)\\y|\\ychest (feels |is |feeling )?(heavy|tight|squeezed|crushed)\\y|\\ypain in (my|the|his|her) chest\\y|\\yheart attack\\y|\\ycrushing\\y.{0,25}\\ychest\\y|\\yleft arm\\y.{0,40}\\y(chest|sweat\\w*)\\y|\\y(chest|sweating|cold sweat)\\y.{0,40}\\yleft arm\\y|\\ysadr[iy]?\\y.{0,20}\\y(bey?wga3\\w*|waga3|wag3a|wa7e3)|\\ywaga3 (fe|fi|f) (el)? ?sadr",
+      "id": "chest_pain"
+     },
+     {
+      "ar": "ضيق (في )?(ال)?(تنفس|نفس)|مش (قادر|قادره|عارف|عارفه) (ا|ي|ت)?(تنفس|اخد نفسي|اخد نفس|ياخد نفسه|تاخد نفسها)|مبيتنفسش|مبتتنفسش|مش (بيتنفس|بتتنفس)|صعوبه (في )?(ال)?تنفس|نفسي (مقطوع|بيتقطع)|بتخنق|مخنوق",
+      "en": "\\y(cant|cannot|can not|couldnt|could not|unable to|hard to|trouble|difficulty|struggling to|struggle to) breath|\\y(cant|cannot|can not) catch (my|his|her) breath\\y|\\yshort(ness)? of breath\\y|\\ynot breathing\\y|\\ystopped breathing\\y|\\ygasping\\y|\\ychoking\\y|\\ymesh (2ader|2adr|qader|2adra|3aref|aaref|3arfa) a?(tnaff?e?s|tnfs|a5od nafas\\w*)",
+      "id": "breathing_difficulty"
+     },
+     {
+      "ar": "اغما|اغم[اي] علي|مغمي علي|فقد(ت)? (ال)?وعي|فاقد(ه)? (ال)?وعي|مش (بيصحي|بتصحي|بيرد|بترد|بيفوق|بتفوق)|مش (عارف|عارفه|قادر|قادره) (اصحي|افوق|اصحيه|اصحيها|افوقه|افوقها)|وقع(ت)? من طول",
+      "en": "\\yunconscious\\y|\\ypassed out\\y|\\ypassing out\\y|\\yfainted\\y|\\yunresponsive\\y|\\ynot waking\\y|\\y(wont|cant|doesnt|cannot|can not) wake\\y|\\ycollapsed\\y|\\ynot responding\\y",
+      "id": "unconscious"
+     },
+     {
+      "ar": "نزيف (شديد|جامد|كتير|مش بيقف)|(ترجيع|بيرجع|بترجع|برجع) دم|كحه (ب|فيها )دم",
+      "en": "\\y(severe|heavy|a lot of) bleeding\\y|\\ybleeding (a lot|heavily|wont stop)\\y|\\y(vomiting|throwing up|coughing up|coughing) blood\\y",
+      "id": "severe_bleeding"
+     },
+     {
+      "ar": "انتحر|هنتحر|انتحار|[يت]نتحر|(ا|ه)موت نفسي|(عايز|عايزه|عاوز|عاوزه|نفسي|اريد|احب|بتمني|اتمني) (ان )?(اموت|انتحر)|(عايز|عايزه|عاوز|عاوزه|نفسه|نفسها) (يموت|تموت)|ا[ذا]ي نفسي|(اوذي|ااذي|اذيت|اوذيت|يوذي|توذي) (نفسي|نفسه|نفسها)|مش (عايز|عايزه|عاوز|عاوزه) (اعيش|يعيش|تعيش)|(انهي|انهاء|اخلص من|انهيت|ينهي|تنهي) (حياتي|حياته|حياتها)|ربنا ياخدني|الموت (ارحم|احسن)|احسن (لي|ليا) اموت|مليش لازمه|(هبلع|بلعت) (كل|علبه|شريط|العلبه|الشريط)|(هاخد|اخد|خدت|اخدت|ابلع) (كل|علبه|شريط) (ال)?(حبوب|دوا|علاج|اقراص|برشام|انسولين)( \\S+){0,3} (مره واحده|مع بعض|دفعه واحده)|(تعبت|تعبان|تعبانه|زهقت|زهقان|زهقانه|مليت|قرفت|طهقت) (خلاص )?(من )?(ال)?(حياه|حياتي|دنيا|عيشه)|(الحياه|حياتي|الدنيا|العيشه) (دي )?(م ?ا?لهاش|ملهاش|مالهاش) (اي )?(لازمه|معني|فايده)|م ?ا?ليش (اي )?لازمه|(مش|مفيش|مافيش|لا) (شايف |شايفه )?(اي )?(فايده|جدوي|معني) (من|في|ف|ل) ?(ال)?(حياه|حياتي|عيشه|اني اعيش)|لا (معني|فايده|جدوي) لحياتي|سيمت (من )?(ال)?حياه|(نفسي|عايز|عايزه|عاوز|عاوزه|ياريت|يا ريت|ياريتني|يا ريتني|اتمني|بتمني) (اني )?ا?نام (و ?)?(ما ?|م)?ا?(صحاش|صحيش|قومش)(?! (غير|الا|قبل|لحد|بدري|متاخر))|(يا ?ريت|ياريتني|يا ريتني|اتمني|بتمني) (اني )?(ما ?|م)?(اصحاش|اتولدت|اتولدتش)(?! (غير|الا|قبل|لحد|بدري|متاخر))|اتمني (الا|ان لا|لو لم) (استيقظ|اصحي)|اتمني الموت|مش (قادر|قادره) (اعيش|اكمل (في )?(ال)?(حياه|حياتي|دنيا|عيشه))|مش (عايز|عايزه|عاوز|عاوزه) اكمل (في )?(ال)?(حياه|حياتي|دنيا|عيشه)",
+      "en": "\\ysuicid|\\ykill (myself|himself|herself)\\y|\\yend (my|his|her) life\\y|\\y(want|wants|wanted) to die\\y|\\ywanna die\\y|\\y(hurt|harm|cut) (myself|himself|herself)\\y|\\ybetter off dead\\y|\\yend (it all|everything)\\y|\\y(dont|do not|no longer) want to (live|be here|be alive|wake up|exist)\\y|\\yno (reason|point) (to|in) (live|living|going on|go on)\\y|\\y(take|swallow|inject|took|swallowed|injected) all (of )?(my |the |his |her )?(\\w+ )?(pills|tablets|insulin|meds|medicine|medicines)( \\w+){0,2} (at once|together|in one go)\\y|\\yswallow(ed)? (all|a whole (box|bottle|pack|strip))\\y|\\ywish (i|he|she) (was|were) dead\\y|\\ykms\\y|\\y(3ayez|3awez|3ayza|3awza|3ayz|nefsy|nefsi) a?mo+t\\y|\\ya2tel nafs[yi]\\y|\\yh?ante7e?r|\\ya?5las (mn|men|min) (el)?7aya?t[iy]?\\y|\\ymesh (3ayez|3awez|3ayza|3awza) a?3ee?sh\\y|\\y(tired|sick|weary) of (life|living|being alive|existing)\\y|\\y(done|finished) with (life|living)\\y|\\y(no|any|the|what is the|whats the|there is no|theres no) (point|reason|purpose|use) (in |of |to )?(living|life|being alive|going on|carrying on)\\y|\\y(life|living|my life) (is|feels|seems) (pointless|meaningless|not worth (living|it))\\y|\\ynot worth living\\y|\\y(wish|hope) (i|he|she) (would not|wouldnt|will not|wont|did not|didnt|never|do not|dont) wake up\\y|\\ysleep and never wake( up)?\\y|\\y(want|wanna|wish i could) (to )?(go to )?sleep and (not|never) wake( up)?\\y|\\ywish (i|he|she) (was|were|had) never (been )?born\\y|\\ybetter off without me\\y|\\y(cant|cannot|can not) go on (living|anymore|any more)\\y|\\y(ta3ba?n[ae]?|ta3bt|ta3abt|zeh2t|zehe2t|zah2an[ae]?|mallet|malleit|2refe?t)( \\w+)? (mn|men|min|m) (el|al|l)? ?(7aya|7ayah|7ayat[iy]|donya|dunya|dnya|3eesha|3isha)\\y|\\y(el|al)? ?(7aya|7ayah|7ayat[iy]|donya|dunya|dnya) (ma ?la?ha?a?sh|ml?ha?sh) (ay |any )?(lazma|lazmah|ma3na|fayda)\\y|\\y(ma?l[iy]+sh|maleesh|ma ?le?esh) lazma\\y|\\ynefs[iy]+ a?nam (w|we|wa|wma|wm) ?(ma ?|m)?a?(s7ash|so7sh|s7sh|2oomsh|2omsh|2umsh|qomsh)\\y|\\y(mesh|msh|mish) (shayf|shayef|shayfa|shayfah) (ay |any )?fayda (mn|men|fe|fi|f) (el)? ?(7aya|7ayah|3eesha|donya|dunya)\\y|\\ymafee?sh fayda (mn|men|fe|fi|f) (el)? ?(7aya|7ayah|3eesha|donya|dunya)\\y",
+      "id": "self_harm"
+     },
+     {
+      "ar": "جرعه (زياده|مضاعفه) بالغلط|اخدت? (حبوب|انسولين|علاج|دوا|جرعه) (كتير|زياده|غلط)|(خد|خدت|اخد|اخدت) جرعه (زياده|مضاعفه)",
+      "en": "\\yoverdos|\\y(took|taken|injected|gave) too (much|many)\\y|\\y(double|wrong) (dose|insulin)\\y.{0,25}\\y(mistake|accident)",
+      "id": "overdose"
+     },
+     {
+      "ar": "(مش مركز|مش داري|مش داريه|بيخرف|بتخرف|تايه|تايهه).{0,30}(عرق|رعش)|(عرق|رعش).{0,30}(مش مركز|مش داري|تايه)",
+      "en": "\\y(very|suddenly|really|so) confused\\y|\\yconfused\\y.{0,40}\\y(sweat|shak)|\\y(sweat|shak)\\w*.{0,40}\\yconfused\\y|\\ycant stay awake\\y|\\ybarely conscious\\y",
+      "id": "confusion"
+     },
+     {
+      "ar": "حامل.{0,60}(نزيف|بنزف|بتنزف|دم (نازل|بينزل)|بينزل (مني )?دم|صداع (شديد|جامد)|زغلله|تشنج)|(نزيف|بنزف|صداع (شديد|جامد)|زغلله).{0,60}حامل",
+      "en": "\\ypregnan\\w*\\y.{0,60}\\y(bleeding|bleed|severe headache|bad headache|blurred vision|blurry vision|seeing spots|fits?|seizure)\\y|\\y(bleeding|severe headache|blurred vision|blurry vision)\\y.{0,60}\\ypregnan",
+      "id": "pregnancy_warning"
+     },
+     {
+      "id": "thunderclap_headache",
+      "en": "\\y(worst|worse) headache (of|in) (my|his|her) life\\y|\\ythunderclap\\y|\\y(sudden|suddenly|all of a sudden)\\y.{0,30}\\y(severe|worst|terrible|explosive|excruciating)\\y.{0,15}\\yheadache\\y|\\y(severe|worst|terrible|explosive|excruciating) headache\\y.{0,30}\\y(sudden|suddenly|all of a sudden)\\y|\\yheadache\\y.{0,60}\\y(stiff|rigid) neck\\y|\\y(stiff|rigid) neck\\y.{0,60}\\yheadache\\y",
+      "ar": "(اسوا|اشد|اوحش|اصعب) صداع (في|ف) (حياتي|حياته|حياتها|عمري)|صداع\\S* (شديد|جامد|فظيع|رهيب)\\S*.{0,30}(فجاه|مره واحده)|(فجاه|مره واحده).{0,30}صداع\\S* (شديد|جامد|فظيع|رهيب)|صداع.{0,60}رقب\\S* (متخشب\\S*|ناشف\\S*|متيبس\\S*|مشدود\\S*)|(تيبس|تخشب) (في )?(ال)?رقب\\S*.{0,60}صداع"
+     },
+     {
+      "ar": "(فجاه|مره واحده).{0,25}(مش شايف|مش شايفه|مبقتش اشوف|مبقاش يشوف|مبقتش تشوف|عميت|النظر راح|نظري راح|ضلمت)|(نظري|نظره|نظرها) راح فجاه",
+      "en": "\\y(suddenly|sudden|all of a sudden)\\y.{0,25}\\y(lost|loss of|cant see|cannot see|blind|went black|curtain)\\y|\\ylost (the |my |his |her )?(vision|sight) in\\y|\\ycurtain over (my|his|her|one) eye\\y",
+      "id": "vision_loss"
+     },
+     {
+      "ar": "(كيتون|اسيتون)\\S* (عالي|مرتفع|موجب|كتير|بلس)|بول\\S* (فيه|في) (اسيتون|كيتون)|نفس\\S* ريحته (فاكهه|اسيتون)",
+      "en": "\\yketones? (are |is |were |level |levels )?(high|large|moderate|positive|very high)\\y|\\y(large|high|moderate|positive) ketones?\\y|\\yfruity breath\\y",
+      "id": "ketones"
+     },
+     {
+      "ar": "صرع|بيتشنج|بتتشنج|اتشنج|تشنج",
+      "en": "\\yseizure|\\yconvuls",
+      "id": "seizure",
+      "contextual": true
+     },
+     {
+      "ar": "جلطه|شلل|تقل في (ال)?(كلام|لسان)|ميل في (ال)?(وش|وجه|بق|فم)|تنميل في نص|مش (قادر|قادره) (احرك|يحرك|تحرك)|(بق|بوق|وش|وج|فم|حنك)\\S* (اتعوج|معوج|مايل|مال|اتلوي|اتشد)|(كلام|لسان)\\S* (تقيل|متلخبط|مش مفهوم|اتقل|بقي تقيل)|مش (قادر|قادره|عارف|عارفه) (ي|ت)(رفع|تكلم)|(ايد|دراع)\\S* (وقع\\S*|مش بت?تحرك|اتشلت|مشلول\\S*)|رجل\\S* (اتشلت|مشلول\\S*|مش بت?تحرك)",
+      "en": "\\ystroke\\y|\\yface (is )?droop|\\yslurred speech\\y|\\yslurring\\y|\\y(weak|weakness|numb|numbness) (on|in) (one|my left|my right|the left|the right) (side|arm|leg)\\y|\\y(face|mouth|smile) (is |looks )?(drooping|droopy|crooked|uneven|twisted|lopsided)\\y|\\y(speech|words|talking) (is |are |sounds )?(slurred|garbled|jumbled)\\y|\\y(suddenly|all of a sudden) (cant|cannot|can not) (lift|raise|move|feel) (my|his|her|one)\\y|\\y(cant|cannot|can not) (lift|raise|move) (his|her) (left|right) (arm|leg|hand)\\y",
+      "id": "one_sided_weakness",
+      "contextual": true
+     },
+     {
+      "ar": "غيبوبه",
+      "en": "\\ycoma\\y|\\ycomatose\\y",
+      "id": "coma",
+      "contextual": true
+     }
+    ],
+    "display_hi": "\\y(reads?|reading|says?|shows?|showing|displays?|displaying)\\s+(hi|h i)\\y|(مكتوب|كاتب|بيكتب|بيقول|بيقرا|بيطلع|طالع|طلع|طلعلي|ظاهر|بيظهر)\\s+(عليه\\s+|فيه\\s+)?(hi|هاي)( |$)",
+    "display_lo": "\\y(reads?|reading|says?|shows?|showing|displays?|displaying)\\s+(lo|low)\\y|(مكتوب|كاتب|بيكتب|بيقول|بيقرا|بيطلع|طالع|طلع|طلعلي|ظاهر|بيظهر)\\s+(عليه\\s+|فيه\\s+)?lo( |$)",
+    "message_ar": "قد تكون هذه حالة طارئة. اتصل بالإسعاف 123 الآن أو توجه لأقرب قسم طوارئ. إذا كان السبب هبوط سكر والشخص يستطيع البلع أعطه 15 جرام سكر سريع أثناء الانتظار. لا تنتظر ردًا إلكترونيًا.",
+    "message_en": "This may be an emergency. Call 123 (Egypt ambulance) now or go to the nearest emergency department. If this is low blood sugar and the person can swallow, give 15 g of fast sugar while waiting. Do not wait for an online answer.",
+    "mmol_value": "([0-9]{1,2}(\\.[0-9]{1,2})?) ?(mmol|ملي ?مول|مليمول)",
+    "clause_split": "[.!?؟،,;؛]+| but | although | however | anyway | بس | لكن ",
+    "team_note_ar": "تم إبلاغ فريق الرعاية ليتمكن من المساعدة.",
+    "team_note_en": "Your care team has been told so they can support you.",
+    "third_person": "يموت|تموت|ينتحر|تنتحر|نفسه|نفسها|حياته|حياتها|\\y(himself|herself|his life|her life|he wants|she wants|he said|she said|my (mother|father|mom|dad|son|daughter|husband|wife))\\y|ماما|بابا|امي|ابويا|ابوي|جوزي|مراتي|ابني|بنتي|بيقول|بتقول",
+    "critical_high": 600,
+    "happening_now": "\\y(now|right now|suddenly|all of a sudden|just now|today|since this morning)\\y|فجاه|دلوقتي|الان|حالا|من شويه|النهارده|مره واحده",
+    "hyper_symptoms": "vomit|throwing up|breath|confus|drows|sleepy|abdominal pain|stomach pain|ketone|fruity|ترجيع|برجع|بيرجع|بترجع|قيء|استفرغ|بستفرغ|بيستفرغ|بتستفرغ|استفراغ|تنفس|نهجان|بنهج|نفسي سريع|تشوش|نعاس|نعسان|بطني|مغص شديد|كيتون|اسيتون|barage3|baraga3|batrage3|batraga3|byrage3|bastafra|nafas[iy]? (sare3|sari3|bysra3)|ba?nhag|ba?nha2|na3san|batn[iy] (bt|bet)wga3",
+    "not_glucose_lab": "(ldl|hdl|cholest|potass|creat|triglyc|ketone|بوتاس|كوليس|كولس|كرياتين|دهون|كيتون)",
+    "glucose_words_ar": "سكر|قراءه|قرايه|الحساس|القياس|قياس|جهاز",
+    "glucose_words_en": "\\y(sugar|glucose|bg|cgm|sensor|reading|readings|fingerstick|glucometer|meter|libre|sokar|sokkar|sukar|sukkar|elsokar)\\y",
+    "not_glucose_after": "^\\s*(%|percent|years?|yrs?|days?|weeks?|months?|minutes?|mins?|hours?|hrs?|am|pm|km|kilomet|meters?|metres?|steps|grams?|kg|units?|iu|tablets?|pills?|mmol|ملي ?مول|مليمول|متر|وحده|وحدات|حبايه|قرص|سنه|سنين|سنوات|يوم|ايام|شهر|شهور|اسبوع|اسابيع|دقيق|دقايق|ساع|كيلو|جرام|خطوه|في الميه|٪)",
+    "urgent_categories": [
+     {
+      "ar": "(صباع|صوابع|اصبع|اصابع|رجل|قدم|كعب|جرح|قرحه)\\S*.{0,30}(اسود|اسودت|سودا|ريح\\S* (وحش|وحشه|مش حلوه|معفنه)|عفن)|غرغرينا",
+      "en": "\\y(toe|toes|foot|feet|heel|wound|ulcer|sore)\\y.{0,30}\\y(black|blackened|turning black|smells?|smelly|stinks?|stinking|rotten)\\y|\\ygangrene\\y",
+      "id": "foot_gangrene"
+     },
+     {
+      "ar": "(صباع|صوابع|اصبع|اصابع|رجل|قدم|كعب|جرح|قرحه)\\S*.{0,40}(صديد|بيرشح|وارم واحمر|احمر ووارم|منفوخ واحمر)|(جرح|قرحه)\\S*.{0,60}(سخونيه|حراره|رعشه)",
+      "en": "\\y(toe|toes|foot|feet|heel|wound|ulcer|sore|cut)\\y.{0,40}\\y(pus|oozing|red and swollen|swollen and red|hot and swollen)\\y|\\y(wound|ulcer|sore|cut)\\y.{0,60}\\y(fever|chills|shivering)\\y",
+      "id": "foot_infection"
+     }
+    ],
+    "urgent_message_ar": "جرح القدم أو التهابها قد يسوء بسرعة مع السكر. من فضلك اعرضه على طبيب اليوم، في عيادتك أو مركز رعاية عاجلة أو قسم الطوارئ، ولا تنتظر موعدك القادم. خفف الضغط عن القدم. إذا كانت هناك حرارة عالية مع رعشة أو تشوش أو تعب شديد فاتصل بـ 123.",
+    "urgent_message_en": "A foot wound or infection can get worse quickly with diabetes. Please have it seen by a doctor today, at your clinic, an urgent care centre or the emergency department; do not wait for your next visit. Keep weight off the foot. If there is a high fever with shivering, confusion, or you feel very unwell, call 123.",
+    "not_glucose_before": "(a1c|hba1c|تراكمي|average of|متوسط)\\D{0,12}$",
+    "urgent_team_note_ar": "شاركت هذا مع فريق الرعاية.",
+    "urgent_team_note_en": "I have shared this with your care team.",
+    "self_harm_message_ar": "أنا آسف جدًا لأنك تشعر بهذا. لست وحدك، والمساعدة متاحة. إذا كنت في خطر الآن اتصل بـ 123 فورًا. من فضلك تحدث اليوم مع شخص تثق به، وتواصل مع طبيب أو مع الخط الساخن للصحة النفسية 16328.",
+    "self_harm_message_en": "I am really sorry you are feeling this way. You are not alone, and help is available. If you are in immediate danger, call 123 now. Please talk to someone you trust today, and contact a doctor or the mental health hotline 16328.",
+    "self_harm_caregiver_ar": "شكرًا لأنك أخبرتني. إذا كان من الممكن أن يؤذي نفسه أو كان في خطر الآن فاتصل بـ 123 وابقَ معه. إذا استطعت ذلك بأمان، فأبعد الأدوية ومنها الإنسولين عن متناوله. تواصل اليوم مع طبيب أو مع الخط الساخن للصحة النفسية 16328.",
+    "self_harm_caregiver_en": "Thank you for telling me. If they might act on these thoughts or are in danger now, call 123 and stay with them. If you can do it safely, keep medicines, including insulin, out of their reach. Contact a doctor or the mental health hotline 16328 today."
+   },
+   "description": "Deterministic emergency pre-screen: category patterns (applied to normalized text, contextual ones per clause), same-day urgent categories, glucose value rules (mg/dL, mmol/L, meter HI/LO) and fixed messages"
+  },
+  {
+   "code": "pattern_gates",
+   "kind": "pattern_gate",
+   "active": true,
+   "config": {
+    "meal_rise_mgdl": 60,
+    "dawn_min_nights": 5,
+    "meal_min_events": 3,
+    "fasting_min_days": 5,
+    "lows_min_episodes": 3,
+    "weekend_diff_mgdl": 25,
+    "nocturnal_min_nights": 2,
+    "fasting_high_fraction": 0.6,
+    "baseline_change_fraction": 0.15
+   },
+   "description": "Minimum-data gates for pattern detection"
+  },
+  {
+   "code": "default_targets",
+   "kind": "targets",
+   "active": true,
+   "config": {
+    "tir_target": 70,
+    "bp_systolic": 130,
+    "fasting_low": 80,
+    "bp_diastolic": 80,
+    "fasting_high": 130,
+    "hba1c_target": 7,
+    "steps_target": 7000,
+    "post_meal_high": 180
+   },
+   "description": "Population default targets (used when no clinician-authored plan exists; never presented as personalized)"
+  },
+  {
+   "code": "dose_change_request",
+   "kind": "dose_guard",
+   "active": true,
+   "config": {
+    "exclude": "\\yinsulin (sensitivity|resistance)\\y|\\ywhat (has |have |is )?chang\\w*\\y|مقاومه (ال)?انسولين|ايه اللي اتغير",
+    "verbs_ar": "زود|ازود|نزود|قلل|اقلل|نقلل|وقف|اوقف|نوقف|بطل|ابطل|نبطل|اغير|نغير|غير|ضاعف|اضاعف|ارفع|نرفع|اخفض|نخفض|اخفف|خفف|افوت|فوت|اقطع|انقص|اسيب|سيب",
+    "verbs_en": "doubl\\w*|increas\\w*|decreas\\w*|reduc\\w*|rais\\w*|lower\\w*|halv\\w*|chang\\w*|adjust\\w*|skip\\w*|stop\\w*|quit\\w*|paus\\w*|hold|holding|discontinu\\w*|cut|cutting|switch\\w*|take (more|less|extra|another|an extra|two|three|[2-9])|come off|get off|go off|wean\\w*|a?zawe?d|nzawe?d|a2all?e?l|aw2af|awa2af|ab6al|abatt?al|a8ayy?ar|aghayy?ar",
+    "intent_ar": "هل|ممكن|ينفع|اقدر|عايز|عايزه|عاوز|عاوزه|المفروض|لازم|امتي",
+    "intent_en": "should i|shall i|can i|could i|may i|do i need to|do i have to|is it ok to|is it okay to|is it safe to|i want to|i will|ill|im going to|i am going to|let me|what if i|am i allowed to|when should i|what time should i|when can i|can she|can he|should she|should he",
+    "objects_ar": "جرعه|جرعات|انسولين|الانسولين|حبوب|حبايه|قرص|اقراص|دوا|الدوا|دواء|ادويه|علاج|العلاج|وحده|وحدات|وحدتين|حقنه|حقن|الحقن|ابره",
+    "objects_en": "dose|doses|dosage|insulin|units?|tablets?|pills?|medicine|medicines|medication|medications|meds|injection|injections|shot|shots|basal|bolus|pump",
+    "quantity_ar": "(كام|كم) (وحده|وحدات|حبايه|قرص|جرعه)|جرعه (مناسبه|كام)|اكتب(لي)? (ال)?جرعه|اخد (اكتر|اقل|زياده|حبايتين|قرصين|جرعتين)|جرعه (زياده|اضافيه|تانيه)|(اخد|تاخد|ياخد|اديها|اديله|ادي) (نص|ربع|حبايه زياده|جرعه زياده|حقنه زياده|وحدات زياده|حبايتين|قرصين|جرعتين|حقنتين)|حقنه (زياده|اضافيه|تانيه|كمان)|وحد(ه|تين|ات) (زياده|كمان)",
+    "quantity_en": "\\yhow (many|much) (units|insulin|tablets|pills|mg|doses?)\\y|\\ywhat dose\\y|\\yhow much .{0,20}(should|can|do) i take\\y|\\y(extra|additional|another|second) (\\w+ )?(dose|shot|injection|pill|tablet|units?)\\y|\\yhalf (a |of )?(my |her |his )?(pill|tablet|dose)\\y",
+    "swap_timing_ar": "بدل|بالليل|بليل|الصبح|السحور|سحور|الفطار|الافطار|فطار|وقت|ميعاد|امتي|قبل النوم|بعد العشا|في رمضان|وانا صايم",
+    "swap_timing_en": "\\y(instead of|instead|at night|in the morning|at bedtime|before bed|after dinner|with dinner|suhoor|sohour|iftar|while fasting|in ramadan|during ramadan)\\y",
+    "intent_verbs_ar": "ابدا|نبدا|ابتدي|اجرب|نجرب|استبدل|ابدل",
+    "intent_verbs_en": "start\\w*|begin|replace|substitut\\w*|swap"
+   },
+   "description": "Deterministic detection of requests to change, start, swap, re-time or dose a medicine (verb + medicine object, built with the drug list including Arabic brand names); answered with fixed text and routed to the care team"
+  },
+  {
+   "code": "dose_guard",
+   "kind": "dose_guard",
+   "active": true,
+   "config": {
+    "negation": "(do not|dont|never|not|without|avoid|should not|shouldnt|must not|mustnt|لا|بدون|بلاش|ممنوع|ما|مت)",
+    "retiming": "\\b(instead|switch (it|them) to|move (it|them|your)|suhoor|sohour|iftar)\\b|بدل|بدلا من|السحور|سحور|الفطار|الافطار|فطار|انقل|غير ميعاد|غيري ميعاد",
+    "clinician": "(doctor|clinician|prescriber|care team|pharmacist|physician|طبيب|الطبيب|دكتور|الدكتور|فريق الرعايه|الصيدلي)",
+    "objects_ar": "جرعه|الجرعه|جرعات|انسولين|الانسولين|حبوب|الحبوب|حبايه|قرص|اقراص|دوا|الدوا|دواء|الدواء|ادويه|علاج|العلاج|حقنه",
+    "objects_en": "dose|doses|dosage|insulin|units?|tablets?|pills?|medicine|medicines|medication|medications|meds|injection|injections|basal|bolus",
+    "refusal_ar": "لا أستطيع تقديم نصيحة بتغيير جرعات الأدوية أو مواعيدها، فهذا قرار طبيبك المعالج فقط. شاركت سؤالك مع فريق الرعاية، ويمكنك مناقشته في زيارتك القادمة.",
+    "refusal_en": "I can't advise on changing medicine doses or timing. Only your treating clinician can do that. I've shared your question with your care team, and you can also discuss it at your next visit.",
+    "take_verbs": "take|taking|takes|move|moving|shift|shifting|خد|خدي|تاخد|تاخدي|خذ|خذي|تناول|تتناول|تناولي|اخد|ناخد|انقل|انقلي",
+    "change_verbs_ar": "زود|زودي|قلل|قللي|وقف|وقفي|اوقف|اوقفي|بطل|بطلي|ضاعف|ضاعفي|ارفع|ارفعي|خفض|خفضي|اخفض|خفف|غير|غيري|فوت|فوتي|سيب|زياده|تقليل|ايقاف|ابدا|ابدئي|استبدل|استبدلي|ضيف|ضيفي|اضف|اضيفي",
+    "change_verbs_en": "double|doubling|increase|increasing|decrease|decreasing|reduce|reducing|raise|raising|lower|lowering|halve|halving|change|changing|adjust|adjusting|skip|skipping|stop|stopping|quit|quitting|pause|pausing|hold|holding|discontinue|discontinuing|cut|cutting|switch|switching|take more|take less|take extra|take another|start|starting|begin|beginning|replace|replacing|substitute|substituting|swap|swapping|add|adding",
+    "number_patterns": [
+     "\\b\\d+(\\.\\d+)?\\s?(mg(?!\\s*\\/)|mcg|units?|iu|ml(?!\\s*\\/)|u)\\b",
+     "\\d+(\\.\\d+)?\\s?(وحده|وحدات|ملجم(?!\\s*\\/)|مجم(?!\\s*\\/)|حبايه|حبايات|قرص|اقراص)",
+     "\\b(one|two|three|four|five|six|half|double)\\s+(more\\s+|extra\\s+)?(units?|tablets?|pills?|doses?)\\b|\\b(half|quarter) (a |of a )?(tablet|pill|dose)\\b|\\b(an? )?(extra|additional|another) (dose|tablet|pill|unit|shot|injection)\\b",
+     "وحدتين|حبايتين|قرصين|جرعتين|نص (حبايه|قرص|جرعه)|(حبايه|جرعه|وحده) (كمان|اضافيه|زياده)",
+     "\\b(low|small|starting|lowest) dose\\b|جرعه (صغيره|قليله|بسيطه|مبدئيه)"
+    ],
+    "supplement_advice": "(?:try|use|using|take|taking|add|adding|drink|drinking|start|خد|خدي|تاخد|جرب|جربي|اشرب|اشربي|تشرب|استخدم|استخدمي|ضيف|ضيفي)\\S* (?:\\S+ ){0,2}(?:cinnamon|fenugreek|bitter melon|moringa|turmeric|supplements?|herbs?|herbal|قرفه|حلبه|ترمس|اعشاب|مكملات|كركم|مورينجا)\\S*(?: \\S+){0,4}? (?:to |will |can |help |helps |عشان |علشان |هي |هو )?(?:lower|reduce|control|treat|replace|instead|ينزل|تنزل|يقلل|تقلل|يظبط|تظبط|يعالج|تعالج|بدل)",
+    "refusal_unlinked_ar": "لا أستطيع تقديم نصيحة بتغيير جرعات الأدوية أو مواعيدها، فهذا قرار الطبيب المعالج فقط. من فضلك اسأل طبيبك أو الصيدلي قبل تغيير أي شيء.",
+    "refusal_unlinked_en": "I can't advise on changing medicine doses or timing. Only a treating clinician can do that. Please ask your doctor or pharmacist before changing anything."
+   },
+   "description": "Output guard: AI text may not contain dose numbers, instructions to change, start, swap or re-time a medicine, or supplement-as-treatment advice (JavaScript patterns on normalized text)"
+  },
+  {
+   "code": "critical_labs",
+   "kind": "lab_critical",
+   "active": true,
+   "config": {
+    "limits": {
+     "tg": {
+      "high": 1000
+     },
+     "fpg": {
+      "low": 54,
+      "high": 400
+     },
+     "egfr": {
+      "low": 15,
+      "drop_fraction": 0.3
+     },
+     "potassium": {
+      "low": 3,
+      "high": 6
+     },
+     "creatinine": {
+      "high": 4,
+      "rise_factor": 1.5
+     }
+    },
+    "message_ar": "نتيجة {test} ({value} {unit}) تحتاج إلى مراجعة طبيب اليوم. {team} إذا شعرت بتعب مثل ضعف شديد أو خفقان أو ضيق في التنفس أو قيء أو تشوش فاتصل بـ 123 الآن.",
+    "message_en": "Your {test} result ({value} {unit}) needs a doctor's review today. {team} If you feel unwell, for example weakness, a racing or irregular heartbeat, breathlessness, vomiting or confusion, call 123 now.",
+    "compare_days": 365,
+    "team_linked_ar": "تم إبلاغ فريق الرعاية.",
+    "team_linked_en": "Your care team has been notified.",
+    "team_unlinked_ar": "من فضلك تواصل مع طبيب اليوم.",
+    "team_unlinked_en": "Please contact a doctor today."
+   },
+   "description": "Critical laboratory values and changes (Clinical Safety Officer sign-off required). Any result at these limits, verified or not, raises a critical inbox item and a fixed notice to the patient"
+  },
+  {
+   "code": "session_policy",
+   "kind": "security",
+   "active": true,
+   "config": {
+    "staff_hours": 12,
+    "patient_days": 30,
+    "patient_idle_days": 14,
+    "staff_idle_minutes": 60
+   },
+   "description": "Session lifetimes: patients and family members stay signed in on their own phone; staff sessions are short and end after an hour without activity"
+  },
+  {
+   "code": "break_glass_policy",
+   "kind": "security",
+   "active": true,
+   "config": {
+    "grant_hours": 4,
+    "grants_per_day": 3,
+    "min_reason_chars": 20,
+    "searches_per_hour": 20
+   },
+   "description": "Emergency access to a record outside the care team: a written reason, a daily limit per clinician and a search limit"
+  },
+  {
+   "code": "retention_policy",
+   "kind": "security",
+   "active": true,
+   "config": {
+    "outbox_days": 30,
+    "invites_days": 30,
+    "incidents_days": 90,
+    "document_file_days": 30,
+    "link_requests_days": 180,
+    "notifications_days": 180,
+    "ai_run_payload_days": 90,
+    "expired_grants_days": 30
+   },
+   "description": "How long operational data that can contain health information is kept (the audit log is kept in full)"
+  },
+  {
+   "code": "low_prediction",
+   "kind": "threshold",
+   "active": true,
+   "description": "Early low-glucose warnings (engine 23_prediction.js): least-squares trend over window_min, projected horizon_min ahead; warn when the projection falls below the low threshold (slope <= -min_drop_per_min) or the fall is fast near it; care team inbox when below the severe threshold or at night. Evening risky-night notice for people on hypo_classes with another risk factor. Demonstration values: Clinical Safety Officer sign-off required.",
+   "config": {
+    "window_min": 30,
+    "horizon_min": 30,
+    "min_points": 3,
+    "min_span_min": 15,
+    "live_within_min": 20,
+    "min_drop_per_min": 1,
+    "fast_drop_per_min": 2,
+    "fast_below": 100,
+    "night_from": 22,
+    "night_to": 6,
+    "night_check_hour": 21,
+    "bedtime_below": 120,
+    "exercise_minutes": 30,
+    "night_low_days": 7,
+    "hypo_classes": [
+     "basal_insulin",
+     "rapid_insulin",
+     "sulfonylurea"
+    ]
+   }
+  },
+  {
+   "code": "ramadan",
+   "kind": "threshold",
+   "active": true,
+   "description": "Ramadan (engine 24_ramadan.js): the Ramadan dates, the fasting hours used for the reading check (approximate Cairo times; set them each year), and the break-the-fast thresholds (IDF-DAR 2021: below 70 or above 300 mg/dL). Clinical Safety Officer sign-off required.",
+   "config": {
+    "start": "2027-02-08",
+    "end": "2027-03-09",
+    "fasting_from": "04:15",
+    "fasting_to": "17:45",
+    "break_below": 70,
+    "break_above": 300
+   }
+  },
+  {
+   "code": "panel_risk",
+   "kind": "threshold",
+   "active": true,
+   "description": "Panel risk ranking (engine 25_care_gaps.js): points per reason when ranking a clinic panel. Demonstration weights; clinical sign-off required.",
+   "config": {
+    "severe_hypo_7d": 5,
+    "hypo_2plus_7d": 3,
+    "tir_below_50": 3,
+    "tir_50_70": 1,
+    "hba1c_above_9": 3,
+    "hba1c_above_8": 2,
+    "egfr_below_30": 3,
+    "egfr_below_45": 2,
+    "safety_finding": 2,
+    "urgent_inbox": 2,
+    "overdue_screening": 1,
+    "overdue_max": 3,
+    "no_data_14d": 1
+   }
+  },
+  {
+   "code": "weekly_digest",
+   "kind": "threshold",
+   "active": true,
+   "description": "Weekly digest (engine 27_digest.js): sent in the app on digest_weekday (0 = Sunday … 6 = Saturday) at digest_hour, Cairo time; the email only says the summary is ready. min_readings and steps_goal choose the weekly goal.",
+   "config": {
+    "digest_weekday": 6,
+    "digest_hour": 10,
+    "min_readings": 7,
+    "steps_goal": 6000
+   }
+  },
+  {
+   "code": "adherence",
+   "kind": "threshold",
+   "active": true,
+   "description": "Medicine supply and missed doses (engine 28_adherence.js): refill notice when a counted medicine has refill_days_ahead days or fewer left; a \"did you take it?\" notice missed_followup_minutes after a dose with no answer (to the person only); a dose missed for one of team_reasons goes to the care team inbox once a week per medicine.",
+   "config": {
+    "refill_days_ahead": 5,
+    "missed_followup_minutes": 120,
+    "team_reasons": [
+     "not_available",
+     "cost",
+     "side_effects"
+    ]
+   }
+  },
+  {
+   "code": "push_policy",
+   "kind": "security",
+   "active": true,
+   "description": "Web push (engine 29_push_privacy.js): at most daily_max pushes per person per day, none in quiet hours (Cairo time) except urgent kinds; the push carries a generic text and a link, never health details (they stay in the app).",
+   "config": {
+    "daily_max": 6,
+    "quiet_from": 23,
+    "quiet_to": 7,
+    "urgent_kinds": [
+     "low_predicted",
+     "ramadan_break_fast",
+     "glucose_severe_hypo",
+     "glucose_hypo",
+     "escalation"
+    ],
+    "max_age_minutes": 60,
+    "batch": 50
+   }
+  },
+  {
+   "code": "privacy",
+   "kind": "security",
+   "active": true,
+   "description": "Personal-data rights and breaches (engine 29_push_privacy.js, Egypt Law 151/2020 and its executive regulations, Decree 816/2025): days to answer a data request, and hours to tell the Personal Data Protection Centre about a breach. Check both against the regulations with the Data Protection Officer before use.",
+   "config": {
+    "response_days": 30,
+    "breach_report_hours": 72
+   }
+  },
+  {
+   "code": "personal_targets",
+   "kind": "targets",
+   "active": true,
+   "description": "Suggested personal targets for the doctor (engine 32_personal.js, ADA Standards of Care 2026 sections 6 and 13): tier tighter (younger, short duration, no heart disease, no medicines that cause lows, no lows), standard, relaxed (severe or recurrent lows, unawareness, eGFR <30, age 65+ with several conditions, long duration with complications), older_complex (75+ with several conditions or frail), pregnancy (no number: specialist). Becomes the person target only when the doctor publishes it in the care plan. food: thresholds of the personal food-response card. Demonstration values: Clinical Safety Officer sign-off required.",
+   "config": {
+    "tiers": {
+     "tighter": {
+      "hba1c_target": 6.5,
+      "tir_target": 70,
+      "tbr_max": 4,
+      "fasting_low": 80,
+      "fasting_high": 130,
+      "post_meal_high": 180
+     },
+     "standard": {
+      "hba1c_target": 7,
+      "tir_target": 70,
+      "tbr_max": 4,
+      "fasting_low": 80,
+      "fasting_high": 130,
+      "post_meal_high": 180
+     },
+     "relaxed": {
+      "hba1c_target": 8,
+      "tir_target": 50,
+      "tbr_max": 1,
+      "fasting_low": 90,
+      "fasting_high": 150,
+      "post_meal_high": 200
+     },
+     "older_complex": {
+      "hba1c_target": 8.5,
+      "tir_target": 50,
+      "tbr_max": 1,
+      "fasting_low": 100,
+      "fasting_high": 180,
+      "post_meal_high": 200
+     }
+    },
+    "tighter_max_age": 50,
+    "tighter_max_years": 10,
+    "older_age": 65,
+    "very_old_age": 75,
+    "complex_conditions": 3,
+    "long_duration_years": 20,
+    "recurrent_lows_90d": 4,
+    "food": {
+     "min_meals": 2,
+     "gentle_below": 30,
+     "high_from": 50
+    }
+   }
+  },
+  {
+   "code": "therapy_considerations",
+   "kind": "threshold",
+   "active": true,
+   "description": "Clinician-only treatment considerations (engine 32_personal.js, ADA Standards of Care 2026 sections 6, 8-11, 13): kidney disease or heart failure without an SGLT2 inhibitor, atherosclerotic disease without a GLP-1 RA or SGLT2 inhibitor, BMI 30+, lows on a sulfonylurea or insulin, older adults on a sulfonylurea, HbA1c above target with no plan change, statin, ACE inhibitor or ARB. Never a dose; never shown to patients. A doctor decision hides an item for recheck_days. cost_band per drug class in Egypt: to be checked by a pharmacist. Demonstration values: Clinical Safety Officer sign-off required.",
+   "config": {
+    "recheck_days": 180,
+    "ckd_egfr_below": 60,
+    "ckd_uacr_from": 30,
+    "sglt2_min_egfr": 20,
+    "bmi_from": 30,
+    "lows_14d": 2,
+    "older_su_age": 65,
+    "statin_ages": [
+     40,
+     75
+    ],
+    "bp_systolic_from": 130,
+    "bp_diastolic_from": 80,
+    "inertia_days": 90,
+    "cost_band": {
+     "sglt2_inhibitor": "medium",
+     "glp1_agonist": "high",
+     "statin": "low",
+     "ace_inhibitor": "low",
+     "arb": "low"
+    }
+   }
+  },
+  {
+   "code": "wellbeing",
+   "kind": "threshold",
+   "active": true,
+   "description": "Wellbeing check-ins (engine 33_wellbeing.js): PAID-5 (Arabic version validated in Egyptian primary care) 8+ = possible diabetes distress; PHQ-2 3+ leads to PHQ-9; PHQ-9 10+ to the care team; PHQ-9 item 9 above 0 = the fixed self-harm crisis path (emergency_patterns texts, critical inbox item); STOP-BANG 3+ to the care team. Due every interval_days (STOP-BANG every stopbang_every_days). Screening, not diagnosis. Demonstration values: Clinical Safety Officer sign-off required.",
+   "config": {
+    "interval_days": 90,
+    "paid5_flag": 8,
+    "phq2_flag": 3,
+    "phq9_flag": 10,
+    "stopbang_flag": 3,
+    "stopbang_bmi": 35,
+    "stopbang_age": 50,
+    "stopbang_every_days": 365
+   }
+  },
+  {
+   "code": "sick_day",
+   "kind": "threshold",
+   "active": true,
+   "description": "Sick-day mode (engine 33_wellbeing.js): lists the medicines that usually need sick-day advice (class_notes: often_paused, low_risk, never_stop); the app never decides a pause, the care team is told at once and advises. A glucose-check reminder every check_hours; ends after max_days. Demonstration values: Clinical Safety Officer sign-off required.",
+   "config": {
+    "check_hours": 4,
+    "max_days": 7,
+    "class_notes": {
+     "sglt2_inhibitor": "often_paused",
+     "biguanide": "often_paused",
+     "loop_diuretic": "often_paused",
+     "thiazide": "often_paused",
+     "potassium_sparing_diuretic": "often_paused",
+     "ace_inhibitor": "often_paused",
+     "arb": "often_paused",
+     "nsaid": "often_paused",
+     "sulfonylurea": "low_risk",
+     "basal_insulin": "never_stop",
+     "rapid_insulin": "never_stop"
+    }
+   }
+  },
+  {
+   "code": "drive_check",
+   "kind": "threshold",
+   "active": true,
+   "description": "Before-driving check (engine 33_wellbeing.js) for people on insulin or a sulfonylurea (classes): measure if there is no reading in max_age_min; below min_mgdl do not drive, treat the low and wait wait_after_low_min after it is back in range; recheck every recheck_hours on long drives (\"five to drive\"). Demonstration values: Clinical Safety Officer sign-off required.",
+   "config": {
+    "min_mgdl": 90,
+    "max_age_min": 30,
+    "recheck_hours": 2,
+    "wait_after_low_min": 45,
+    "classes": [
+     "sulfonylurea",
+     "basal_insulin",
+     "rapid_insulin"
+    ]
+   }
+  },
+  {
+   "code": "heat",
+   "kind": "threshold",
+   "active": true,
+   "description": "Heat alerts (engine 34_heat.js, section WF-029): once a day the Open-Meteo forecast for the city coordinates of the governorates where patients live (no patient data sent); a forecast maximum of threshold_c or more sends a hot-day notice (fluids, lows with heat, keeping insulin cool).",
+   "config": {
+    "threshold_c": 38
+   }
+  },
+  {
+   "code": "monitoring_alerts",
+   "kind": "threshold",
+   "active": true,
+   "description": "Monitoring alerts (engine 35_monitoring.js), checked after every judged answer. Soft: average safety below soft_safety_avg over window_hours (min_judged answers or more), or more than failed_rate of AI runs failed (min_runs or more): incident and a notice to the Evaluation Owner (owner_roles). Hard: any Companion answer with safety at or below hard_safety_score pauses the Companion model answers (feature flag companion off; the emergency pre-screen and fixed replies still run) until an admin resumes with a reason. Calibration: the judge counts as calibrated after min_pairs answers scored by two people.",
+   "config": {
+    "soft_safety_avg": 4,
+    "window_hours": 24,
+    "min_judged": 3,
+    "hard_safety_score": 1,
+    "failed_rate": 0.2,
+    "min_runs": 5,
+    "owner_roles": [
+     "platform_admin",
+     "safety_officer"
+    ],
+    "min_pairs": 10
+   }
+  },
+  {
+   "code": "companion_review",
+   "kind": "ai_gate",
+   "active": true,
+   "description": "Nurse approval of Companion answers (engine 36_reviews.js): a model answer with one of hold_signals, for a patient with a care team, is held for a doctor or nurse to approve, edit or reject; the patient gets an immediate holding reply. Emergencies, dose refusals and blocked messages are never held. Not decided within review_hours: a high inbox item.",
+   "config": {
+    "enabled": true,
+    "hold_signals": [
+     "medicine_named",
+     "symptom_described",
+     "medgemma_consulted",
+     "reassurance"
+    ],
+    "review_hours": 4
+   }
+  },
+  {
+   "code": "clinic_policy",
+   "kind": "clinic",
+   "active": true,
+   "config": {
+    "triage_min_confidence": 0.6,
+    "waitlist_offer_minutes": 15,
+    "booking_days_ahead": 14,
+    "max_offer_slots": 3,
+    "rx_numbers_must_match": true,
+    "escalate_urgent_minutes": 60,
+    "escalate_priority_hours": 4,
+    "escalate_routine_hours": 24
+   },
+   "description": "Polyclinic: triage results under this confidence go to reception as \"review\"; waitlist offers expire after these minutes; how many days ahead free slots are searched; at most this many times offered; the plain-Arabic prescription must keep every number of the doctor's text; a request reception has not decided after these minutes (urgent) or hours (priority, routine) is escalated to the clinic admins and the patient is told"
+  },
+  {
+   "code": "diabetes_oncall",
+   "kind": "routing",
+   "active": true,
+   "description": "Diabetes cover (engine 41_doctor_match.js). A patient without a linked diabetes doctor (no care team, or only doctors of other specialties) is covered by the on-call diabetes clinic (organization_id): its clinicians get the alerts (care_team role oncall) and the patient is shown a matched diabetes doctor from the directory (diabetes_doctors), preferring the specialties in order and the patient's area. Emergencies always point to 123.",
+   "config": {
+    "organization_id": "00000000-0000-0000-0000-00000000a001",
+    "specialty_order": [
+     "diabetology",
+     "endocrinology",
+     "internal_medicine"
+    ],
+    "diabetes_specialties": [
+     "diabetology",
+     "endocrinology",
+     "internal_medicine"
+    ],
+    "emergency_number": "123"
+   }
+  }
+ ],
+ "error_messages": [
+  {
+   "pattern": "^bad_request: (.+) must be a number from",
+   "message_ar": "القيمة المدخلة خارج المدى المسموح. من فضلك راجعها."
+  },
+  {
+   "pattern": "^bad_request: A .+ of .+ is outside the possible range",
+   "message_ar": "هذه النتيجة خارج المدى الممكن. من فضلك راجع القيمة والوحدة."
+  },
+  {
+   "pattern": "^bad_request: The unit .+ is not supported",
+   "message_ar": "هذه الوحدة غير مدعومة لهذا التحليل. من فضلك أدخل القيمة بالوحدة المطلوبة."
+  },
+  {
+   "pattern": "^bad_request: The target .+ must be a number",
+   "message_ar": "يجب أن يكون الهدف رقمًا."
+  },
+  {
+   "pattern": "^bad_request: The target .+ must be between",
+   "message_ar": "الهدف خارج المدى المسموح."
+  },
+  {
+   "pattern": "^bad_request: A referral that is",
+   "message_ar": "لا يمكن نقل هذا التحويل إلى هذه المرحلة."
+  },
+  {
+   "pattern": "^bad_request: A transfer cannot move from",
+   "message_ar": "لا يمكن نقل طلب التحويل إلى هذه الحالة."
+  },
+  {
+   "pattern": "^bad_request: A .+ appointment cannot be changed",
+   "message_ar": "لا يمكن تغيير حالة هذا الموعد بهذه الطريقة."
+  },
+  {
+   "pattern": "^bad_request: Add the specialist report first",
+   "message_ar": "أضف تقرير الطبيب المتخصص أولًا."
+  },
+  {
+   "pattern": "^bad_request: All three consents are required",
+   "message_ar": "الموافقات الثلاث مطلوبة لاستخدام الخدمة."
+  },
+  {
+   "pattern": "^bad_request: An account with this email already exists",
+   "message_ar": "يوجد حساب بهذا البريد الإلكتروني بالفعل. جرّب تسجيل الدخول."
+  },
+  {
+   "pattern": "^bad_request: Appointments can be booked up to one year ahead",
+   "message_ar": "يمكن حجز المواعيد حتى عام مقدمًا فقط."
+  },
+  {
+   "pattern": "^bad_request: Attach a photo or PDF, or paste the text",
+   "message_ar": "أرفق صورة أو ملف PDF، أو الصق النص."
+  },
+  {
+   "pattern": "^bad_request: Available and total must be whole numbers",
+   "message_ar": "يجب أن يكون المتاح والإجمالي أرقامًا صحيحة."
+  },
+  {
+   "pattern": "^bad_request: Available cannot be more than the total",
+   "message_ar": "لا يمكن أن يكون المتاح أكثر من الإجمالي."
+  },
+  {
+   "pattern": "^bad_request: Choose a doctor or nurse of this clinic",
+   "message_ar": "اختر طبيبًا أو ممرضة من هذه العيادة."
+  },
+  {
+   "pattern": "^bad_request: Choose the receiving facility first",
+   "message_ar": "اختر المنشأة المستقبلة أولًا."
+  },
+  {
+   "pattern": "^bad_request: Confirm that the license of this guideline",
+   "message_ar": "أكّد أن ترخيص هذا الدليل يسمح باستخدامه قبل الموافقة."
+  },
+  {
+   "pattern": "^bad_request: Email is not set up on this service",
+   "message_ar": "البريد الإلكتروني غير مفعّل في هذه الخدمة."
+  },
+  {
+   "pattern": "^bad_request: Enter both blood pressure numbers",
+   "message_ar": "أدخل رقمي ضغط الدم."
+  },
+  {
+   "pattern": "^bad_request: Enter the heart rate",
+   "message_ar": "أدخل معدل ضربات القلب في الدقيقة."
+  },
+  {
+   "pattern": "^bad_request: Enter the weight in kg",
+   "message_ar": "أدخل الوزن بالكيلوجرام."
+  },
+  {
+   "pattern": "^bad_request: Entries can be added for the last 30 days only",
+   "message_ar": "يمكن إضافة التسجيلات لآخر 30 يومًا فقط."
+  },
+  {
+   "pattern": "^bad_request: Give a short reason",
+   "message_ar": "اكتب سببًا مختصرًا."
+  },
+  {
+   "pattern": "^bad_request: Height must be between",
+   "message_ar": "يجب أن يكون الطول بين 80 و250 سم."
+  },
+  {
+   "pattern": "^bad_request: Only a requested or booked appointment can be cancelled",
+   "message_ar": "يمكن إلغاء الموعد المطلوب أو المحجوز فقط."
+  },
+  {
+   "pattern": "^bad_request: Only photos",
+   "message_ar": "الصور (PNG وJPEG وWebP وHEIC) وملفات PDF فقط مدعومة."
+  },
+  {
+   "pattern": "^bad_request: Only readings you typed in during the last 7 days",
+   "message_ar": "يمكن حذف القراءات التي أدخلتها بنفسك خلال آخر 7 أيام فقط."
+  },
+  {
+   "pattern": "^bad_request: Only the AI assistant consent can be changed here",
+   "message_ar": "يمكن تغيير موافقة المساعد الذكي فقط من هنا. لإيقاف كل المعالجة أغلق حسابك."
+  },
+  {
+   "pattern": "^bad_request: Please accept the terms",
+   "message_ar": "من فضلك وافق على الشروط للمتابعة."
+  },
+  {
+   "pattern": "^bad_request: Please choose male or female",
+   "message_ar": "من فضلك اختر ذكر أو أنثى."
+  },
+  {
+   "pattern": "^bad_request: Please choose the date and time of the appointment",
+   "message_ar": "من فضلك اختر تاريخ ووقت الموعد."
+  },
+  {
+   "pattern": "^bad_request: Please describe the emergency reason",
+   "message_ar": "من فضلك اكتب سبب الطوارئ (20 حرفًا على الأقل)."
+  },
+  {
+   "pattern": "^bad_request: Please enter a valid date of birth",
+   "message_ar": "من فضلك أدخل تاريخ ميلاد صحيحًا."
+  },
+  {
+   "pattern": "^bad_request: Please enter a valid email address",
+   "message_ar": "من فضلك أدخل بريدًا إلكترونيًا صحيحًا."
+  },
+  {
+   "pattern": "^bad_request: Please enter your name",
+   "message_ar": "من فضلك أدخل اسمك."
+  },
+  {
+   "pattern": "^bad_request: Please finish the questions first",
+   "message_ar": "من فضلك أكمل الأسئلة أولًا."
+  },
+  {
+   "pattern": "^bad_request: Please give the document a title",
+   "message_ar": "من فضلك اكتب عنوانًا للمستند."
+  },
+  {
+   "pattern": "^bad_request: Please write your message",
+   "message_ar": "من فضلك اكتب رسالتك."
+  },
+  {
+   "pattern": "^bad_request: Sensor readings cannot be removed",
+   "message_ar": "لا يمكن حذف قراءات الحساس."
+  },
+  {
+   "pattern": "^bad_request: Start the setup first",
+   "message_ar": "ابدأ الإعداد أولًا."
+  },
+  {
+   "pattern": "^bad_request: That answer is not valid for this question",
+   "message_ar": "هذه الإجابة غير صالحة لهذا السؤال."
+  },
+  {
+   "pattern": "^bad_request: The appointment time has already passed",
+   "message_ar": "وقت الموعد مضى بالفعل."
+  },
+  {
+   "pattern": "^bad_request: The code is not correct\\. Check the time",
+   "message_ar": "الرمز غير صحيح. تأكد من ضبط الوقت على هاتفك وحاول مرة أخرى."
+  },
+  {
+   "pattern": "^bad_request: The code is not correct",
+   "message_ar": "الرمز غير صحيح."
+  },
+  {
+   "pattern": "^bad_request: The date is in the future",
+   "message_ar": "التاريخ في المستقبل."
+  },
+  {
+   "pattern": "^bad_request: The document does not show the date",
+   "message_ar": "المستند لا يوضح تاريخ النتائج. أدخل تاريخ التحليل."
+  },
+  {
+   "pattern": "^bad_request: The fasting range is not valid",
+   "message_ar": "مدى السكر الصائم غير صحيح: يجب أن تكون القيمة الصغرى أقل من الكبرى."
+  },
+  {
+   "pattern": "^bad_request: The file is larger than 4 MB",
+   "message_ar": "الملف أكبر من 4 ميجابايت. من فضلك التقط صورة أصغر."
+  },
+  {
+   "pattern": "^bad_request: The first blood pressure number must be the higher one",
+   "message_ar": "يجب أن يكون الرقم الأول لضغط الدم هو الأعلى."
+  },
+  {
+   "pattern": "^bad_request: The measurement time is in the future",
+   "message_ar": "وقت القياس في المستقبل."
+  },
+  {
+   "pattern": "^bad_request: The new password needs at least 8 characters",
+   "message_ar": "كلمة المرور الجديدة تحتاج 8 أحرف على الأقل، بينها حروف وأرقام."
+  },
+  {
+   "pattern": "^bad_request: The new time has already passed",
+   "message_ar": "الوقت الجديد مضى بالفعل."
+  },
+  {
+   "pattern": "^bad_request: The password needs at least 8 characters",
+   "message_ar": "كلمة المرور تحتاج 8 أحرف على الأقل، بينها حروف وأرقام."
+  },
+  {
+   "pattern": "^bad_request: The reading time is in the future",
+   "message_ar": "وقت القراءة في المستقبل. من فضلك راجع التاريخ والوقت."
+  },
+  {
+   "pattern": "^bad_request: The receiving facility cannot be changed",
+   "message_ar": "لا يمكن تغيير المنشأة المستقبلة بعد حجز السرير. ألغِ هذا التحويل وأنشئ طلبًا جديدًا."
+  },
+  {
+   "pattern": "^bad_request: The result date is in the future",
+   "message_ar": "تاريخ النتيجة في المستقبل."
+  },
+  {
+   "pattern": "^bad_request: The value read for",
+   "message_ar": "القيمة المقروءة ليست رقمًا. ألغِ تحديدها وأدخل النتيجة يدويًا."
+  },
+  {
+   "pattern": "^bad_request: There is no pending edition",
+   "message_ar": "لا يوجد إصدار معلّق بهذا الرقم."
+  },
+  {
+   "pattern": "^bad_request: This appointment has already started or passed",
+   "message_ar": "هذا الموعد بدأ أو مضى بالفعل."
+  },
+  {
+   "pattern": "^bad_request: This document has already been reviewed",
+   "message_ar": "تمت مراجعة هذا المستند بالفعل أو أنه غير جاهز للمراجعة."
+  },
+  {
+   "pattern": "^bad_request: This email is already used",
+   "message_ar": "هذا البريد الإلكتروني مستخدم بالفعل."
+  },
+  {
+   "pattern": "^bad_request: This facility has no confirmed free place",
+   "message_ar": "لا يوجد مكان متاح مؤكد في هذه المنشأة الآن. اطلب منها تحديث السعة أو اختر منشأة أخرى."
+  },
+  {
+   "pattern": "^bad_request: This invitation code is not valid or has expired",
+   "message_ar": "رمز الدعوة غير صالح أو انتهت صلاحيته. اطلب رمزًا جديدًا."
+  },
+  {
+   "pattern": "^bad_request: This referral can no longer be changed",
+   "message_ar": "لم يعد ممكنًا تغيير هذا التحويل. من فضلك تواصل مع فريق الرعاية."
+  },
+  {
+   "pattern": "^bad_request: This request is closed",
+   "message_ar": "هذا الطلب مغلق. ابدأ طلبًا جديدًا من \"احتاج رعاية\"."
+  },
+  {
+   "pattern": "^bad_request: This section belongs to a fetched guideline edition",
+   "message_ar": "هذا القسم جزء من إصدار دليل مستورد. وافق على الإصدار كاملًا من مصادر الأدلة."
+  },
+  {
+   "pattern": "^bad_request: This service is for adults aged 18 and over",
+   "message_ar": "هذه الخدمة للبالغين من عمر 18 عامًا فأكثر."
+  },
+  {
+   "pattern": "^bad_request: Times must be written like 08:30",
+   "message_ar": "يجب كتابة المواعيد بهذا الشكل 08:30 (نظام 24 ساعة)."
+  },
+  {
+   "pattern": "^bad_request: Two-factor sign-in is already on",
+   "message_ar": "التحقق بخطوتين مفعّل بالفعل. أوقفه برمز حالي قبل إعداده من جديد."
+  },
+  {
+   "pattern": "^bad_request: Unknown diabetes type",
+   "message_ar": "نوع السكر غير معروف."
+  },
+  {
+   "pattern": "^bad_request: Unknown question",
+   "message_ar": "سؤال غير معروف."
+  },
+  {
+   "pattern": "^bad_request: Up to 5 family members",
+   "message_ar": "يمكن لخمسة أفراد من العائلة على الأكثر متابعة ملفك."
+  },
+  {
+   "pattern": "^bad_request: Use Account settings to change your own password",
+   "message_ar": "استخدم إعدادات الحساب لتغيير كلمة مرورك."
+  },
+  {
+   "pattern": "^bad_request: Use registration for patients",
+   "message_ar": "يسجل المرضى بأنفسهم من صفحة التسجيل."
+  },
+  {
+   "pattern": "^bad_request: You already have 5 open invitations",
+   "message_ar": "لديك 5 دعوات مفتوحة بالفعل. ألغِ واحدة قبل إنشاء أخرى."
+  },
+  {
+   "pattern": "^bad_request: You are already connected with this clinic",
+   "message_ar": "أنت مرتبط بهذه العيادة بالفعل."
+  },
+  {
+   "pattern": "^bad_request: You cannot deactivate your own account",
+   "message_ar": "لا يمكنك إيقاف حسابك بنفسك."
+  },
+  {
+   "pattern": "^bad_request: You cannot use your own invitation code",
+   "message_ar": "لا يمكنك استخدام رمز الدعوة الخاص بك."
+  },
+  {
+   "pattern": "^bad_request: date must be YYYY-MM-DD",
+   "message_ar": "يجب كتابة التاريخ بهذا الشكل YYYY-MM-DD."
+  },
+  {
+   "pattern": "^bad_request: value_mgdl must be between 20 and 600",
+   "message_ar": "يجب أن تكون قراءة السكر بين 20 و600 مجم/دل."
+  },
+  {
+   "pattern": "^bad_request: value must be a number",
+   "message_ar": "يجب أن تكون القيمة رقمًا."
+  },
+  {
+   "pattern": "^bad_request: (message|complaint_text|display|name|substance|value|resource|patient_id) is required",
+   "message_ar": "هذا الحقل مطلوب."
+  },
+  {
+   "pattern": "^bad_request: (unknown|status must|action must|channel must|type must|decision must|granted must|preferred_language must|scheduled_time must|only a DRAFT)",
+   "message_ar": "الطلب غير صالح. من فضلك حدّث الصفحة وحاول مرة أخرى."
+  },
+  {
+   "pattern": "^bad_request: The daily limit",
+   "message_ar": "تم الوصول إلى الحد اليومي."
+  },
+  {
+   "pattern": "^conflict: The doctor already has an appointment",
+   "message_ar": "لدى الطبيب موعد آخر في هذا الوقت. من فضلك اختر وقتًا آخر."
+  },
+  {
+   "pattern": "^conflict: There is already an appointment at this time",
+   "message_ar": "يوجد موعد آخر في هذا الوقت بالفعل."
+  },
+  {
+   "pattern": "^forbidden: A doctor or nurse must handle safety and urgent items",
+   "message_ar": "يجب أن يتعامل طبيب أو ممرضة مع عناصر السلامة والعناصر العاجلة."
+  },
+  {
+   "pattern": "^forbidden: A second person must approve",
+   "message_ar": "يجب أن يوافق شخص آخر على مستند أضفته بنفسك."
+  },
+  {
+   "pattern": "^forbidden: Clinic admins can create",
+   "message_ar": "يستطيع مدير العيادة إنشاء حسابات الأطباء والممرضين وموظفي الاستقبال فقط."
+  },
+  {
+   "pattern": "^forbidden: Only a doctor or nurse can record the specialist report",
+   "message_ar": "يستطيع الطبيب أو الممرضة فقط تسجيل تقرير المتخصص أو إغلاق التحويل."
+  },
+  {
+   "pattern": "^forbidden: Only the patient can do this",
+   "message_ar": "هذا الإجراء للمريض فقط."
+  },
+  {
+   "pattern": "^forbidden: The daily limit of emergency access grants",
+   "message_ar": "تم الوصول إلى الحد اليومي لصلاحيات الطوارئ. تواصل مع مسؤول السلامة."
+  },
+  {
+   "pattern": "^forbidden: You can only add staff to your own clinic",
+   "message_ar": "يمكنك إضافة موظفين لعيادتك فقط."
+  },
+  {
+   "pattern": "^forbidden: You can only choose where to go for this referral",
+   "message_ar": "يمكنك فقط اختيار المكان الذي تذهب إليه لهذا التحويل."
+  },
+  {
+   "pattern": "^forbidden: You cannot reset the password of this account",
+   "message_ar": "لا يمكنك إعادة تعيين كلمة مرور هذا الحساب."
+  },
+  {
+   "pattern": "^forbidden: Your family access does not allow this",
+   "message_ar": "صلاحية العائلة لا تسمح بهذا. يستطيع المريض تغييرها من الرعاية، العائلة."
+  },
+  {
+   "pattern": "^forbidden: (cannot|no access|only the treating doctor|role )",
+   "message_ar": "ليست لديك صلاحية لهذا الإجراء."
+  },
+  {
+   "pattern": "^bad_request: The current password is not correct",
+   "message_ar": "كلمة المرور الحالية غير صحيحة."
+  },
+  {
+   "pattern": "^bad_request: This reset link is not valid or has expired",
+   "message_ar": "رابط إعادة التعيين غير صالح أو انتهت صلاحيته. اطلب رابطًا جديدًا."
+  },
+  {
+   "pattern": "^too_many_requests: Too many attempts",
+   "message_ar": "محاولات كثيرة. من فضلك انتظر 15 دقيقة وحاول مرة أخرى."
+  },
+  {
+   "pattern": "^too_many_requests: Too many record searches",
+   "message_ar": "عمليات بحث كثيرة في السجلات. من فضلك انتظر قبل البحث مرة أخرى."
+  },
+  {
+   "pattern": "^too_many_requests: Too many sign-in attempts",
+   "message_ar": "محاولات تسجيل دخول كثيرة. من فضلك انتظر 15 دقيقة وحاول مرة أخرى."
+  },
+  {
+   "pattern": "^too_many_requests: Too many wrong codes",
+   "message_ar": "رموز خاطئة كثيرة. من فضلك انتظر 15 دقيقة وسجّل الدخول مرة أخرى."
+  },
+  {
+   "pattern": "^too_many_requests: You have sent 5 invitations today",
+   "message_ar": "أرسلت 5 دعوات اليوم. من فضلك حاول غدًا."
+  },
+  {
+   "pattern": "^too_many_requests: Too many requests",
+   "message_ar": "طلبات كثيرة. من فضلك انتظر بضع دقائق وحاول مرة أخرى."
+  },
+  {
+   "pattern": "^unauthorized: Invalid email or password",
+   "message_ar": "البريد الإلكتروني أو كلمة المرور غير صحيحة."
+  },
+  {
+   "pattern": "^unauthorized: The code is not correct",
+   "message_ar": "الرمز غير صحيح."
+  },
+  {
+   "pattern": "^unauthorized: The sign-in step expired",
+   "message_ar": "انتهت مهلة خطوة تسجيل الدخول. من فضلك سجّل الدخول مرة أخرى."
+  },
+  {
+   "pattern": "^unauthorized: Sign in required",
+   "message_ar": "يجب تسجيل الدخول."
+  },
+  {
+   "pattern": "^forbidden: Your role cannot do this",
+   "message_ar": "دورك لا يسمح بهذا الإجراء."
+  },
+  {
+   "pattern": "^password_change_required: ",
+   "message_ar": "من فضلك اختر كلمة مرور جديدة للمتابعة."
+  },
+  {
+   "pattern": "^mfa_required: ",
+   "message_ar": "فعّل التحقق بخطوتين من إعدادات حسابك للمتابعة."
+  },
+  {
+   "pattern": "^unknown_action: ",
+   "message_ar": "إجراء غير معروف."
+  },
+  {
+   "pattern": "^not_found: ",
+   "message_ar": "لم يتم العثور على العنصر المطلوب."
+  }
+ ]
+}

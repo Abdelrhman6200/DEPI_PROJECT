@@ -1,0 +1,22 @@
+{
+  "type": "object",
+  "properties": {
+    "rx_ar": {
+      "type": "string",
+      "description": "The prescription in plain Arabic, every number as written"
+    },
+    "summary_en": {
+      "type": "string",
+      "description": "Short English summary of the visit for the patient"
+    },
+    "summary_ar": {
+      "type": "string",
+      "description": "The same in Arabic"
+    }
+  },
+  "required": [
+    "rx_ar",
+    "summary_en",
+    "summary_ar"
+  ]
+}

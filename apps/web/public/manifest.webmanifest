@@ -1,0 +1,24 @@
+{
+  "name": "MediCare / ميديكير",
+  "short_name": "MediCare",
+  "description": "Everyday care for diabetes and the specialist clinics. رعاية يومية للسكري وعيادات التخصصات.",
+  "lang": "ar",
+  "dir": "rtl",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#f6f5f1",
+  "theme_color": "#0f766e",
+  "categories": ["health", "medical"],
+  "icons": [
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" },
+    { "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ],
+  "shortcuts": [
+    { "name": "طوارئ / Emergency", "short_name": "طوارئ", "url": "/emergency", "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }] },
+    { "name": "سجّل السكر / Log sugar", "short_name": "سجّل السكر", "url": "/app/health/glucose?log=1", "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }] }
+  ]
+}

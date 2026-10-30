@@ -1,0 +1,40 @@
+{
+  "type": "object",
+  "properties": {
+    "cc": {
+      "type": "string",
+      "description": "Chief complaint, one line"
+    },
+    "s": {
+      "type": "string",
+      "description": "Subjective"
+    },
+    "o": {
+      "type": "string",
+      "description": "Objective: facts from RECORD only"
+    },
+    "a": {
+      "type": "string",
+      "description": "Points to assess (not a diagnosis)"
+    },
+    "p": {
+      "type": "string",
+      "description": "Suggested checks for the visit"
+    },
+    "lab_flags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Recent lab values outside their range, as written in RECORD"
+    }
+  },
+  "required": [
+    "cc",
+    "s",
+    "o",
+    "a",
+    "p",
+    "lab_flags"
+  ]
+}

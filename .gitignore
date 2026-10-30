@@ -1,0 +1,35 @@
+node_modules/
+.next/
+.env
+infra/n8n-credentials.json
+*.log
+.DS_Store
+apps/web/.env.local
+ai/evals/results/
+infra/hostinger/.env
+infra/hostinger/n8n-credentials.json
+infra/hostinger/sheets.env
+
+# Local flavour of the platform workflow (Sheets stand-in, no Google credential), built by the setup scripts
+workflows/n8n-local/
+# Local Sheets stand-in data
+.sheets-emulator/
+
+# Local Claude Code session data
+.claude/
+
+# Recorded videos (large binaries; regenerate with scripts/video)
+*.mp4
+scripts/video/frames/
+scripts/video/frames.json
+scripts/video/list.txt
+scripts/video/chrome-profile-*/
+ai/evals/.cache/
+infra/langfuse/.env
+# The graduation backup video is a required deliverable (docs/graduation/README.md).
+!docs/graduation/video/*.mp4
+
+# Uploaded archives (may hold secrets): never commit
+drive-download-*.zip
+*.zip
+!apps/**/*.zip

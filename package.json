@@ -1,0 +1,12 @@
+{
+  "name": "health-platform",
+  "private": true,
+  "version": "0.1.0",
+  "scripts": {
+    "dev": "pnpm --filter web dev",
+    "build": "pnpm -r build",
+    "typecheck": "pnpm -r typecheck",
+    "workflows:build": "node workflows/src/build.mjs"
+  },
+  "packageManager": "pnpm@10.4.1"
+}

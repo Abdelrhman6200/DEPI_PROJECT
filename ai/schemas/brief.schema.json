@@ -1,0 +1,90 @@
+{
+  "type": "object",
+  "properties": {
+    "reason_for_visit": {
+      "type": "string",
+      "description": ""
+    },
+    "changes_since_last_visit": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": ""
+    },
+    "glucose_summary": {
+      "type": "string",
+      "description": ""
+    },
+    "medication_adherence": {
+      "type": "string",
+      "description": ""
+    },
+    "important_events": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": ""
+    },
+    "labs": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": ""
+    },
+    "overdue_screenings": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": ""
+    },
+    "data_gaps": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": ""
+    },
+    "patient_questions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": ""
+    },
+    "clinical_interpretation": {
+      "type": "string",
+      "description": ""
+    },
+    "guideline_points": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Up to 3 recommendations from GUIDELINE_EVIDENCE that apply to this patient, each ending with the id of its chunk"
+    },
+    "sources": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Ids from the context"
+    }
+  },
+  "required": [
+    "reason_for_visit",
+    "changes_since_last_visit",
+    "glucose_summary",
+    "medication_adherence",
+    "important_events",
+    "labs",
+    "overdue_screenings",
+    "data_gaps",
+    "patient_questions",
+    "clinical_interpretation",
+    "sources"
+  ]
+}

@@ -1,0 +1,150 @@
+# Langfuse (open source LLM tracing), self-hosted next to the platform so traces never leave this computer.
+# Started and configured by scripts/set-langfuse.sh (it writes infra/langfuse/.env with random secrets and a ready
+# project with API keys; no sign-up needed). UI: http://localhost:3010 (sign in with LANGFUSE_INIT_USER_EMAIL/PASSWORD).
+# Based on the official Langfuse v3 docker compose; every port is bound to this computer only. Image versions are pinned
+# (the Chainguard MinIO images only publish "latest" for free, so they are pinned by digest); raise them on purpose.
+# LANGFUSE_BIND (in infra/langfuse/.env) can move the UI and ingestion port to a private address, e.g. this PC's
+# Tailscale IP, so a production server on the same tailnet can send traces (docs/deploy/hostinger.md, "Tracing").
+# Never bind it to a public address.
+name: langfuse
+
+x-logging: &logging
+  driver: json-file
+  options: { max-size: "10m", max-file: "3" }
+
+services:
+  langfuse-worker:
+    image: docker.io/langfuse/langfuse-worker:3.225.11
+    restart: unless-stopped
+    logging: *logging
+    depends_on: &deps
+      postgres: { condition: service_healthy }
+      minio-init: { condition: service_completed_successfully }
+      redis: { condition: service_healthy }
+      clickhouse: { condition: service_healthy }
+    environment: &env
+      DATABASE_URL: postgresql://postgres:${LF_PG_PASSWORD}@postgres:5432/postgres
+      SALT: ${LF_SALT}
+      ENCRYPTION_KEY: ${LF_ENCRYPTION_KEY}
+      TELEMETRY_ENABLED: "false"
+      CLICKHOUSE_MIGRATION_URL: clickhouse://clickhouse:9000
+      CLICKHOUSE_URL: http://clickhouse:8123
+      CLICKHOUSE_USER: clickhouse
+      CLICKHOUSE_PASSWORD: ${LF_CH_PASSWORD}
+      CLICKHOUSE_CLUSTER_ENABLED: "false"
+      LANGFUSE_S3_EVENT_UPLOAD_BUCKET: langfuse
+      LANGFUSE_S3_EVENT_UPLOAD_REGION: auto
+      LANGFUSE_S3_EVENT_UPLOAD_ACCESS_KEY_ID: minio
+      LANGFUSE_S3_EVENT_UPLOAD_SECRET_ACCESS_KEY: ${LF_MINIO_PASSWORD}
+      LANGFUSE_S3_EVENT_UPLOAD_ENDPOINT: http://minio:9000
+      LANGFUSE_S3_EVENT_UPLOAD_FORCE_PATH_STYLE: "true"
+      LANGFUSE_S3_EVENT_UPLOAD_PREFIX: events/
+      LANGFUSE_S3_MEDIA_UPLOAD_BUCKET: langfuse
+      LANGFUSE_S3_MEDIA_UPLOAD_REGION: auto
+      LANGFUSE_S3_MEDIA_UPLOAD_ACCESS_KEY_ID: minio
+      LANGFUSE_S3_MEDIA_UPLOAD_SECRET_ACCESS_KEY: ${LF_MINIO_PASSWORD}
+      LANGFUSE_S3_MEDIA_UPLOAD_ENDPOINT: http://localhost:3011
+      LANGFUSE_S3_MEDIA_UPLOAD_FORCE_PATH_STYLE: "true"
+      LANGFUSE_S3_MEDIA_UPLOAD_PREFIX: media/
+      REDIS_HOST: redis
+      REDIS_PORT: "6379"
+      REDIS_AUTH: ${LF_REDIS_PASSWORD}
+
+  langfuse-web:
+    image: docker.io/langfuse/langfuse:3.225.11
+    restart: unless-stopped
+    logging: *logging
+    depends_on: *deps
+    ports:
+      - "${LANGFUSE_BIND:-127.0.0.1}:3010:3000"
+    environment:
+      <<: *env
+      NEXTAUTH_URL: http://localhost:3010
+      NEXTAUTH_SECRET: ${LF_NEXTAUTH_SECRET}
+      # Headless start: organisation, project, API keys and the first user are created on the first start.
+      LANGFUSE_INIT_ORG_ID: depi-health
+      LANGFUSE_INIT_ORG_NAME: Diabetes Care Platform
+      LANGFUSE_INIT_PROJECT_ID: diabetes-care
+      LANGFUSE_INIT_PROJECT_NAME: Diabetes Care
+      LANGFUSE_INIT_PROJECT_PUBLIC_KEY: ${LANGFUSE_PUBLIC_KEY}
+      LANGFUSE_INIT_PROJECT_SECRET_KEY: ${LANGFUSE_SECRET_KEY}
+      LANGFUSE_INIT_USER_EMAIL: ${LANGFUSE_INIT_USER_EMAIL}
+      LANGFUSE_INIT_USER_NAME: Evaluation Owner
+      LANGFUSE_INIT_USER_PASSWORD: ${LANGFUSE_INIT_USER_PASSWORD}
+
+  clickhouse:
+    image: docker.io/clickhouse/clickhouse-server:24.12
+    restart: unless-stopped
+    logging: *logging
+    user: "101:101"
+    environment:
+      CLICKHOUSE_DB: default
+      CLICKHOUSE_USER: clickhouse
+      CLICKHOUSE_PASSWORD: ${LF_CH_PASSWORD}
+    volumes:
+      - lf_clickhouse_data:/var/lib/clickhouse
+      - lf_clickhouse_logs:/var/log/clickhouse-server
+    healthcheck:
+      test: wget --no-verbose --tries=1 --spider http://localhost:8123/ping || exit 1
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 5s
+
+  # MinIO (event and media storage). The minio/minio image left Docker Hub in 2025: Chainguard's build is used, with a
+  # one-off job that creates the bucket.
+  minio:
+    image: cgr.dev/chainguard/minio:latest@sha256:2136d593beacf4461187035eca949fe49abd589d5079735025c711ca58fee0c8
+    restart: unless-stopped
+    logging: *logging
+    command: ["server", "--address", ":9000", "--console-address", ":9001", "/data"]
+    environment:
+      MINIO_ROOT_USER: minio
+      MINIO_ROOT_PASSWORD: ${LF_MINIO_PASSWORD}
+    ports:
+      - "127.0.0.1:3011:9000"
+    volumes:
+      - lf_minio_data:/data
+
+  minio-init:
+    image: cgr.dev/chainguard/minio-client:latest-dev@sha256:799f7e86017c3ee8d00f6372e1ee28dd73453f271d5b306a47af8e8a408a777a
+    restart: "no"
+    logging: *logging
+    depends_on: [minio]
+    entrypoint: ["/bin/sh", "-c"]
+    command: ["for i in $$(seq 1 30); do mc alias set lf http://minio:9000 minio \"$$MINIO_PW\" && mc mb --ignore-existing lf/langfuse && exit 0; sleep 2; done; exit 1"]
+    environment:
+      MINIO_PW: ${LF_MINIO_PASSWORD}
+
+  redis:
+    image: docker.io/redis:7.4.11
+    restart: unless-stopped
+    logging: *logging
+    command: ["--requirepass", "${LF_REDIS_PASSWORD}"]
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "${LF_REDIS_PASSWORD}", "ping"]
+      interval: 3s
+      timeout: 10s
+      retries: 10
+
+  postgres:
+    image: docker.io/postgres:16.15
+    restart: unless-stopped
+    logging: *logging
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${LF_PG_PASSWORD}
+      POSTGRES_DB: postgres
+    volumes:
+      - lf_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 3s
+      timeout: 3s
+      retries: 10
+
+volumes:
+  lf_postgres_data:
+  lf_clickhouse_data:
+  lf_clickhouse_logs:
+  lf_minio_data:

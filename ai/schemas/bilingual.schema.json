@@ -1,0 +1,17 @@
+{
+  "type": "object",
+  "properties": {
+    "body_en": {
+      "type": "string",
+      "description": "English text"
+    },
+    "body_ar": {
+      "type": "string",
+      "description": "Arabic text"
+    }
+  },
+  "required": [
+    "body_en",
+    "body_ar"
+  ]
+}

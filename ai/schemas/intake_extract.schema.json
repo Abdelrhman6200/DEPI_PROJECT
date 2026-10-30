@@ -1,0 +1,88 @@
+{
+  "type": "object",
+  "properties": {
+    "q_red_flags": {
+      "type": "array",
+      "description": "Only red flags clearly described; never \"none\"",
+      "items": {
+        "type": "string",
+        "enum": [
+          "chest_pain",
+          "breathing_difficulty",
+          "unconscious",
+          "confusion",
+          "one_sided_weakness",
+          "severe_bleeding",
+          "vomiting_cannot_keep_fluids",
+          "very_low_glucose_not_improving"
+        ]
+      }
+    },
+    "q_area": {
+      "type": "string",
+      "enum": [
+        "diabetes",
+        "general",
+        "chest",
+        "breathing",
+        "digestive",
+        "urinary",
+        "skin_foot",
+        "eyes",
+        "head_neuro",
+        "joints",
+        "mental",
+        "other"
+      ]
+    },
+    "q_onset": {
+      "type": "string",
+      "enum": [
+        "today",
+        "1_3_days",
+        "4_7_days",
+        "1_4_weeks",
+        "over_month"
+      ]
+    },
+    "q_severity": {
+      "type": "number",
+      "description": "0-10, only when stated"
+    },
+    "q_glucose_now": {
+      "type": "number",
+      "description": "mg/dL, today only"
+    },
+    "q_fever": {
+      "type": "string",
+      "enum": [
+        "yes",
+        "no"
+      ]
+    },
+    "q_eat_drink": {
+      "type": "string",
+      "enum": [
+        "yes",
+        "no"
+      ]
+    },
+    "q_foot": {
+      "type": "string",
+      "enum": [
+        "small_clean",
+        "red_swollen",
+        "black_or_smelly"
+      ]
+    },
+    "q_trend": {
+      "type": "string",
+      "enum": [
+        "better",
+        "same",
+        "worse"
+      ]
+    }
+  },
+  "required": []
+}

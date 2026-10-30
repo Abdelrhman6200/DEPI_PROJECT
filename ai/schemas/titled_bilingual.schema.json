@@ -1,0 +1,34 @@
+{
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string",
+      "description": "At most 60 characters, English"
+    },
+    "title_ar": {
+      "type": "string",
+      "description": "The same title in Arabic"
+    },
+    "body_en": {
+      "type": "string",
+      "description": "English text"
+    },
+    "body_ar": {
+      "type": "string",
+      "description": "Arabic text"
+    },
+    "citations": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Supporting ids"
+    }
+  },
+  "required": [
+    "title",
+    "title_ar",
+    "body_en",
+    "body_ar"
+  ]
+}

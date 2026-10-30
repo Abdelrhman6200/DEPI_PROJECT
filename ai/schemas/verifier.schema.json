@@ -1,0 +1,27 @@
+{
+  "type": "object",
+  "properties": {
+    "approved": {
+      "type": "boolean"
+    },
+    "issues": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Short descriptions of any rule violations"
+    },
+    "categories": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Zero or more of: grounding, dose, diagnosis, emergency, policy, scope, injection, leak, privacy, citation, language, other"
+    }
+  },
+  "required": [
+    "approved",
+    "issues",
+    "categories"
+  ]
+}

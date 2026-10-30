@@ -1,0 +1,48 @@
+{
+  "type": "object",
+  "properties": {
+    "patient_title": {
+      "type": "string",
+      "description": "At most 70 characters, English"
+    },
+    "patient_title_ar": {
+      "type": "string",
+      "description": "The same title in Arabic, at most 70 characters"
+    },
+    "patient_body_en": {
+      "type": "string",
+      "description": "60-110 words, English"
+    },
+    "patient_body_ar": {
+      "type": "string",
+      "description": "60-110 words, Arabic"
+    },
+    "clinician_summary": {
+      "type": "string",
+      "description": "2-4 sentences for the care team"
+    },
+    "questions_to_discuss": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "1-3 questions"
+    },
+    "citations": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Supporting ids"
+    }
+  },
+  "required": [
+    "patient_title",
+    "patient_title_ar",
+    "patient_body_en",
+    "patient_body_ar",
+    "clinician_summary",
+    "questions_to_discuss",
+    "citations"
+  ]
+}

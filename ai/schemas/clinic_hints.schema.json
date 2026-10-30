@@ -1,0 +1,43 @@
+{
+  "type": "object",
+  "properties": {
+    "items": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "kind": {
+            "type": "string",
+            "enum": [
+              "consider_diagnosis",
+              "consider_test",
+              "consider_treatment",
+              "red_flag",
+              "interaction"
+            ]
+          },
+          "text": {
+            "type": "string",
+            "description": "One short line"
+          },
+          "why": {
+            "type": "string",
+            "description": "The facts it rests on"
+          }
+        },
+        "required": [
+          "kind",
+          "text",
+          "why"
+        ]
+      }
+    },
+    "note": {
+      "type": "string",
+      "description": "One line for the doctor, optional"
+    }
+  },
+  "required": [
+    "items"
+  ]
+}

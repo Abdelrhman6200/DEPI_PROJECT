@@ -1,0 +1,37 @@
+{
+  "type": "object",
+  "properties": {
+    "answer": {
+      "type": "string",
+      "description": "The reply to the patient, in the patient language, with [n] after each sentence that uses a source (n = its position in citations)"
+    },
+    "citations": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Ids of record items or guideline chunks that support the answer"
+    },
+    "suggested_actions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Zero or more of: open_care_access, log_glucose, book_appointment, view_plan, call_emergency"
+    },
+    "needs_clinician_review": {
+      "type": "boolean",
+      "description": "True when only the clinician can answer"
+    },
+    "topic": {
+      "type": "string",
+      "description": "Short topic label, e.g. glucose, medication, food, activity, labs, care_navigation, other"
+    }
+  },
+  "required": [
+    "answer",
+    "citations",
+    "suggested_actions",
+    "needs_clinician_review"
+  ]
+}
